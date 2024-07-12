@@ -258,10 +258,20 @@ void CPU_NAME::exec_ECALL(uint32_t inst) {}
 void CPU_NAME::exec_EBREAK(uint32_t inst) {}
 
 void CPU_NAME::exec_ECALLBREAK(uint32_t inst) {
-    if (imm_I(inst) == 0x0)
+    int funct7 = (inst >> 25) & 0x7f;
+    if (imm_I(inst) == 0x0) {
         exec_ECALL(inst);
-    if (imm_I(inst) == 0x1)
+    } else if (imm_I(inst) == 0x1) {
         exec_EBREAK(inst);
+    } else if (rs2(inst) == 0x2) {
+        if (funct7 == 0x8) {
+            exec_SRET(inst);
+        } else if (funct7 == 0x18) {
+            exec_MRET(inst);
+        }
+    } else if (funct7 == 0x9) {
+        exec_SFENCE_VMA(inst);
+    }
     debug("ecallbreak\n");
 }
 
@@ -331,9 +341,20 @@ void CPU_NAME::exec_REMUW(uint32_t inst) {
     debug("remuw\n");
 }
 
-void CPU_NAME::exec_LR_W(uint32_t inst) {}
-void CPU_NAME::exec_SC_W(uint32_t inst) {}
-void CPU_NAME::exec_AMOSWAP_W(uint32_t inst) {}
+void CPU_NAME::exec_LR_W(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(Registers[rs1(inst)], 32);
+    debug("amolr.w\n");
+}
+void CPU_NAME::exec_SC_W(uint32_t inst) {
+    MemoryStore(Registers[rs1(inst)], 32, Registers[rs2(inst)]);
+    Registers[rd(inst)] = 0;
+    debug("amosc.w\n");
+}
+void CPU_NAME::exec_AMOSWAP_W(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(rs1(inst), 32);
+    MemoryStore(rs1(inst), 32, rs2(inst));
+    debug("amoswap.w\n");
+}
 void CPU_NAME::exec_AMOADD_W(uint32_t inst) {
     uint32_t tmp = MemoryLoad(Registers[rs1(inst)], 32);
     uint32_t res = tmp + (uint32_t)Registers[rs2(inst)];
@@ -362,46 +383,89 @@ void CPU_NAME::exec_AMOOR_W(uint32_t inst) {
     MemoryStore(Registers[rs1(inst)], 32, res);
     debug("amoor.w\n");
 }
-void CPU_NAME::exec_AMOMIN_W(uint32_t inst) {}
-void CPU_NAME::exec_AMOMAX_W(uint32_t inst) {}
-void CPU_NAME::exec_AMOMINU_W(uint32_t inst) {}
-void CPU_NAME::exec_AMOMAXU_W(uint32_t inst) {}
+void CPU_NAME::exec_AMOMIN_W(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(rs1(inst), 32);
+    MemoryStore(rs1(inst), 32, std::min(Registers[rd(inst)], rs2(inst)));
+    debug("amomin.w\n");
+}
+void CPU_NAME::exec_AMOMAX_W(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(rs1(inst), 32);
+    MemoryStore(rs1(inst), 32, std::max(Registers[rd(inst)], rs2(inst)));
+    debug("amomax.w\n");
+}
+void CPU_NAME::exec_AMOMINU_W(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(rs1(inst), 32);
+    MemoryStore(rs1(inst), 32, std::min(Registers[rd(inst)], rs2(inst)));
+    debug("amominu.w\n");
+}
+void CPU_NAME::exec_AMOMAXU_W(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(rs1(inst), 32);
+    MemoryStore(rs1(inst), 32, std::max(Registers[rd(inst)], rs2(inst)));
+    debug("amomaxu.w\n");
+}
 
-void CPU_NAME::exec_LR_D(uint32_t inst) {}
-void CPU_NAME::exec_SC_D(uint32_t inst) {}
-void CPU_NAME::exec_AMOSWAP_D(uint32_t inst) {}
+void CPU_NAME::exec_LR_D(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(Registers[rs1(inst)], 64);
+    debug("amolr.d\n");
+}
+void CPU_NAME::exec_SC_D(uint32_t inst) {
+    MemoryStore(Registers[rs1(inst)], 64, Registers[rs2(inst)]);
+    Registers[rd(inst)] = 0;
+    debug("amosc.d\n");
+}
+void CPU_NAME::exec_AMOSWAP_D(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(rs1(inst), 64);
+    MemoryStore(rs1(inst), 64, rs2(inst));
+    debug("amoswap.d\n");
+}
 void CPU_NAME::exec_AMOADD_D(uint32_t inst) {
-    uint32_t tmp = MemoryLoad(Registers[rs1(inst)], 32);
-    uint32_t res = tmp + (uint32_t)Registers[rs2(inst)];
+    uint64_t tmp = MemoryLoad(Registers[rs1(inst)], 64);
+    uint64_t res = tmp + (uint64_t)Registers[rs2(inst)];
     Registers[rd(inst)] = tmp;
-    MemoryStore(Registers[rs1(inst)], 32, res);
-    debug("amoadd.w\n");
+    MemoryStore(Registers[rs1(inst)], 64, res);
+    debug("amoadd.d\n");
 }
 void CPU_NAME::exec_AMOXOR_D(uint32_t inst) {
-    uint32_t tmp = MemoryLoad(Registers[rs1(inst)], 32);
-    uint32_t res = tmp ^ (uint32_t)Registers[rs2(inst)];
+    uint64_t tmp = MemoryLoad(Registers[rs1(inst)], 64);
+    uint64_t res = tmp ^ (uint64_t)Registers[rs2(inst)];
     Registers[rd(inst)] = tmp;
-    MemoryStore(Registers[rs1(inst)], 32, res);
-    debug("amoxor.w\n");
+    MemoryStore(Registers[rs1(inst)], 64, res);
+    debug("amoxor.d\n");
 }
 void CPU_NAME::exec_AMOAND_D(uint32_t inst) {
-    uint32_t tmp = MemoryLoad(Registers[rs1(inst)], 32);
-    uint32_t res = tmp & (uint32_t)Registers[rs2(inst)];
+    uint64_t tmp = MemoryLoad(Registers[rs1(inst)], 64);
+    uint64_t res = tmp & (uint64_t)Registers[rs2(inst)];
     Registers[rd(inst)] = tmp;
-    MemoryStore(Registers[rs1(inst)], 32, res);
-    debug("amoand.w\n");
+    MemoryStore(Registers[rs1(inst)], 64, res);
+    debug("amoand.d\n");
 }
 void CPU_NAME::exec_AMOOR_D(uint32_t inst) {
-    uint32_t tmp = MemoryLoad(Registers[rs1(inst)], 32);
-    uint32_t res = tmp | (uint32_t)Registers[rs2(inst)];
+    uint64_t tmp = MemoryLoad(Registers[rs1(inst)], 64);
+    uint64_t res = tmp | (uint64_t)Registers[rs2(inst)];
     Registers[rd(inst)] = tmp;
-    MemoryStore(Registers[rs1(inst)], 32, res);
-    debug("amoor.w\n");
+    MemoryStore(Registers[rs1(inst)], 64, res);
+    debug("amoor.d\n");
 }
-void CPU_NAME::exec_AMOMIN_D(uint32_t inst) {}
-void CPU_NAME::exec_AMOMAX_D(uint32_t inst) {}
-void CPU_NAME::exec_AMOMINU_D(uint32_t inst) {}
-void CPU_NAME::exec_AMOMAXU_D(uint32_t inst) {}
+void CPU_NAME::exec_AMOMIN_D(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(rs1(inst), 64);
+    MemoryStore(rs1(inst), 64, std::min(Registers[rd(inst)], rs2(inst)));
+    debug("amomin.d\n");
+}
+void CPU_NAME::exec_AMOMAX_D(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(rs1(inst), 64);
+    MemoryStore(rs1(inst), 64, std::max(Registers[rd(inst)], rs2(inst)));
+    debug("amomax.d\n");
+}
+void CPU_NAME::exec_AMOMINU_D(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(rs1(inst), 64);
+    MemoryStore(rs1(inst), 64, std::min(Registers[rd(inst)], rs2(inst)));
+    debug("amominu.d\n");
+}
+void CPU_NAME::exec_AMOMAXU_D(uint32_t inst) {
+    Registers[rd(inst)] = MemoryLoad(rs1(inst), 64);
+    MemoryStore(rs1(inst), 64, std::max(Registers[rd(inst)], rs2(inst)));
+    debug("amomaxu.d\n");
+}
 
 void CPU_NAME::exec_CSRRW(uint32_t inst) {
     Registers[rd(inst)] = csrRead(csr(inst));
@@ -427,4 +491,44 @@ void CPU_NAME::exec_CSRRSI(uint32_t inst) {
 void CPU_NAME::exec_CSRRCI(uint32_t inst) {
     csrWrite(csr(inst), CSRegisters[csr(inst)] & !rs1(inst));
     debug("csrrci\n");
+}
+void CPU_NAME::exec_SFENCE_VMA(uint32_t inst) {
+    // Do Nothing
+    debug("sfence.vma\n");
+}
+void CPU_NAME::exec_SRET(uint32_t inst) {
+    switch ((csrRead(SSTATUS) >> 8) & 1) {
+        case 1: CurrentMode = Mode::Supervisor; break;
+        default: CurrentMode = Mode::User; break;
+    };
+
+    if (((csrRead(SSTATUS) >> 5) & 1) == 1) {
+        csrWrite(SSTATUS, (csrRead(SSTATUS) | (1 << 1)));
+    } else {
+        csrWrite(SSTATUS, (csrRead(SSTATUS) & !(1 << 1)));
+    }
+
+    csrWrite(SSTATUS, csrRead(SSTATUS) | (1 << 5));
+    csrWrite(SSTATUS, csrRead(SSTATUS) & !(1 << 8));
+    debug("sret\n");
+}
+void CPU_NAME::exec_MRET(uint32_t inst) {
+    ProgramCounter = csrRead(MEPC);
+    
+    switch ((csrRead(MSTATUS) >> 11) & 0b11) {
+        case 2: CurrentMode = Mode::Machine; break;
+        case 1: CurrentMode = Mode::Supervisor; break;
+        default: CurrentMode = Mode::User; break;
+    };
+
+    if (((csrRead(MSTATUS) >> 7) & 1) == 1) {
+        csrWrite(MSTATUS, (csrRead(MSTATUS) | (1 << 3)));
+    } else {
+        csrWrite(MSTATUS, (csrRead(MSTATUS) & !(1 << 3)));
+    }
+
+    csrWrite(MSTATUS, (csrRead(MSTATUS) | (1 << 7)));
+
+    csrWrite(MSTATUS, (csrRead(MSTATUS) & !(0b11 << 11)));
+    debug("mret\n");
 }

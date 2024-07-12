@@ -197,7 +197,7 @@
     #define REMUW   0x7
 
 #define CSR 0x73
-    #define ECALLBREAK    0x00     // contains both ECALL and EBREAK
+    #define ECALLBREAK    0x00     // contains both ECALL and EBREAK and SRET and MRET and SFENCE.VMA
     #define CSRRW   0x01
     #define CSRRS   0x02
     #define CSRRC   0x03
@@ -218,18 +218,18 @@
     #define AMOMINU_W   0x18
     #define AMOMAXU_W   0x1c
 
-//#define AMO_D 0x2f
-    //#define LR_D        0x02
-    //#define SC_D        0x03
-    //#define AMOSWAP_D   0x01
-    //#define AMOADD_D    0x00
-    //#define AMOXOR_D    0x04
-    //#define AMOAND_D    0x0c
-    //#define AMOOR_D     0x08
-    //#define AMOMIN_D    0x10
-    //#define AMOMAX_D    0x14
-    //#define AMOMINU_D   0x18
-    //#define AMOMAXU_D   0x1c
+#define AMO_D 0x3f
+    #define LR_D        0x02
+    #define SC_D        0x03
+    #define AMOSWAP_D   0x01
+    #define AMOADD_D    0x00
+    #define AMOXOR_D    0x04
+    #define AMOAND_D    0x0c
+    #define AMOOR_D     0x08
+    #define AMOMIN_D    0x10
+    #define AMOMAX_D    0x14
+    #define AMOMINU_D   0x18
+    #define AMOMAXU_D   0x1c
 #include <cstdint>
 #include <vector>
 #include <functional>
@@ -346,6 +346,9 @@ private:
     virtual void exec_CSRRWI(uint32_t inst) override;
     virtual void exec_CSRRSI(uint32_t inst) override;
     virtual void exec_CSRRCI(uint32_t inst) override;
+    virtual void exec_SFENCE_VMA(uint32_t inst) override;
+    virtual void exec_SRET(uint32_t inst) override;
+    virtual void exec_MRET(uint32_t inst) override;
 
     void debug(std::string s);
 
@@ -353,4 +356,5 @@ private:
     uint64_t Registers[32]; // 32 64-bit Registers
     uint64_t ProgramCounter; // Program Counter
     uint64_t CSRegisters[4069]; // Control and Status Registers
+    Mode CurrentMode = Mode::Machine;
 };

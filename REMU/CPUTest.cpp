@@ -136,14 +136,14 @@ int CPU_NAME::Execute(uint32_t inst) {
         case I_TYPE:  
             switch (funct3) {
                 case ADDI:  exec_ADDI(inst); break;  // RV32I Base
-                case SLLI:  exec_SLLI(inst); break;  // RV32I Base + RV64I Base
+                case SLLI:  exec_SLLI(inst); break;  // RV64I Base
                 case SLTI:  exec_SLTI(inst); break;  // RV32I Base
                 case SLTIU: exec_SLTIU(inst); break;  // RV32I Base
                 case XORI:  exec_XORI(inst); break;  // RV32I Base
                 case SRI:   
                     switch (funct7) {
-                        case SRLI:  exec_SRLI(inst); break;  // RV32I Base + RV64I Base
-                        case SRAI:  exec_SRAI(inst); break;  // RV32I Base + RV64I Base
+                        case SRLI:  exec_SRLI(inst); break;  // RV64I Base
+                        case SRAI:  exec_SRAI(inst); break;  // RV64I Base
                         default: ;
                     } break;
                 case ORI:   exec_ORI(inst); break;  // RV32I Base
@@ -239,6 +239,24 @@ int CPU_NAME::Execute(uint32_t inst) {
                 case AMOMAX_W  :  exec_AMOMAX_W(inst); break; // RV32A Standard
                 case AMOMINU_W :  exec_AMOMINU_W(inst); break; // RV32A Standard
                 case AMOMAXU_W :  exec_AMOMAXU_W(inst); break; // RV32A Standard
+                default:
+                    fprintf(stderr, "[-] ERROR-> opcode:0x%x, funct3:0x%x, funct7:0x%x\n", opcode, funct3, funct7);
+                    return 0;
+            } break;
+
+        case AMO_D:
+            switch (funct7 >> 2) { // since, funct[1:0] = aq, rl
+                case LR_D      :  exec_LR_D(inst); break; // RV64A Standard
+                case SC_D      :  exec_SC_D(inst); break; // RV64A Standard
+                case AMOSWAP_D :  exec_AMOSWAP_D(inst); break; // RV64 Standard 
+                case AMOADD_D  :  exec_AMOADD_D(inst); break; // RV64A Standard
+                case AMOXOR_D  :  exec_AMOXOR_D(inst); break; // RV64A Standard
+                case AMOAND_D  :  exec_AMOAND_D(inst); break; // RV64A Standard
+                case AMOOR_D  :  exec_AMOOR_D(inst); break; // RV64A Standard
+                case AMOMIN_D  :  exec_AMOMIN_D(inst); break; // RV64A Standard
+                case AMOMAX_D  :  exec_AMOMAX_D(inst); break; // RV64A Standard
+                case AMOMINU_D :  exec_AMOMINU_D(inst); break; // RV64A Standard
+                case AMOMAXU_D :  exec_AMOMAXU_D(inst); break; // RV64A Standard
                 default:
                     fprintf(stderr, "[-] ERROR-> opcode:0x%x, funct3:0x%x, funct7:0x%x\n", opcode, funct3, funct7);
                     return 0;
