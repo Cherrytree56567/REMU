@@ -36,7 +36,7 @@
 
 int main(int argc, char *argv[]) {
     std::shared_ptr<MachineTest> mac = std::make_shared<MachineTest>(100);
-    mac->read_file("csr.bin"); // argv[1]
+    mac->read_file("fib.bin"); // argv[1]
 
     while (mac->Loop()) {
         mac->ReturnCPU()->DumpRegisters();

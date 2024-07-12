@@ -235,6 +235,7 @@
 #include <functional>
 #include <iostream>
 #include <cstring>
+#include <variant>
 #include <iomanip>
 #include <fstream>
 #include <string>
@@ -242,6 +243,7 @@
 #include "RAM.h"
 #include "OpcodeHelpers.h"
 #include "Trap.h"
+#include "Bus.h"
 
 enum Mode {
     User = 0b00,
@@ -251,16 +253,16 @@ enum Mode {
 
 class CPU {
 public:
-    CPU(std::shared_ptr<RAM> ram);
+    CPU(std::shared_ptr<Bus> BUS);
 
-    virtual std::pair<uint64_t, Exception> MemoryLoad(uint64_t addr, uint64_t size);
-    virtual void MemoryStore(uint64_t addr, uint64_t size, uint64_t value);
+    virtual std::variant<uint64_t, Exception> MemoryLoad(uint64_t addr, uint64_t size);
+    virtual std::variant<uint64_t, Exception> MemoryStore(uint64_t addr, uint64_t size, uint64_t value);
 
     virtual uint64_t csrRead(uint64_t csr);
     virtual void csrWrite(uint64_t csr, uint64_t value);
 
-    virtual uint32_t Fetch();
-    virtual int Execute(uint32_t inst);
+    virtual std::variant<uint64_t, Exception> Fetch();
+    virtual std::variant<uint64_t, Exception> Execute(uint32_t inst);
     virtual void DumpRegisters();
 
     virtual bool Loop();
@@ -306,9 +308,9 @@ public:
     virtual void exec_OR(uint32_t inst);
     virtual void exec_AND(uint32_t inst);
     virtual void exec_FENCE(uint32_t inst);
-    virtual void exec_ECALL(uint32_t inst);
-    virtual void exec_EBREAK(uint32_t inst);
-    virtual void exec_ECALLBREAK(uint32_t inst);
+    virtual std::variant<uint64_t, Exception> exec_ECALL(uint32_t inst);
+    virtual std::variant<uint64_t, Exception> exec_EBREAK(uint32_t inst);
+    virtual std::variant<uint64_t, Exception> exec_ECALLBREAK(uint32_t inst);
     virtual void exec_ADDIW(uint32_t inst);
     virtual void exec_SLLIW(uint32_t inst);
     virtual void exec_SRLIW(uint32_t inst);
@@ -357,6 +359,7 @@ public:
 
     void debug(std::string s);
 
+    std::shared_ptr<Bus> bus;
     std::shared_ptr<RAM> Memory;
     uint64_t Registers[32]; // 32 64-bit Registers
     uint64_t ProgramCounter; // Program Counter

@@ -1,16 +1,16 @@
 #define CPU_NAME CPU
 #include "CPU.h"
 
-CPU_NAME::CPU_NAME(std::shared_ptr<RAM> ram) {
+CPU_NAME::CPU_NAME(std::shared_ptr<Bus> BUS) {
     Registers[0] = 0x00; // Register x0 hardwired to 0
     Registers[2] = MEMORY_BASE + MEMORY_SIZE; // Set Stack Pointer
     ProgramCounter = MEMORY_BASE;
-    Memory = ram;
+    bus = BUS;
+    Memory = bus->GetRam();
 }
 
-uint32_t CPU_NAME::Fetch() {
-    uint32_t inst = MemoryLoad(ProgramCounter, 32);
-    return inst;
+std::variant<uint64_t, Exception> CPU_NAME::Fetch() {
+    return MemoryLoad(ProgramCounter, 32);
 }
 
 void CPU_NAME::debug(std::string s) {
@@ -18,38 +18,49 @@ void CPU_NAME::debug(std::string s) {
 }
 
 bool CPU_NAME::Loop() {
-    uint32_t inst = Fetch();
+    uint32_t inst;
+    try {
+        inst = std::get<uint64_t>(Fetch());
+    } catch (const std::bad_variant_access& e) {
+        return false;
+    }
 
     ProgramCounter += 4;
 
-    if (!Execute(inst))
+    try {
+        if (std::get<uint64_t>(Execute(inst)) != 0) {
+            return false;
+        }
+    } catch (const std::bad_variant_access& e) {
         return false;
+    }
 
-    if(ProgramCounter==0)
+    if (ProgramCounter == 0)
         return false;
 
     return true;
 }
 
-uint64_t CPU_NAME::MemoryLoad(uint64_t addr, uint64_t size) {
+std::variant<uint64_t, Exception> CPU_NAME::MemoryLoad(uint64_t addr, uint64_t size) {
     switch (size) {
     case 8:  return Memory->MemoryLoad8(addr);  break;
     case 16: return Memory->MemoryLoad16(addr); break;
     case 32: return Memory->MemoryLoad32(addr); break;
     case 64: return Memory->MemoryLoad64(addr); break;
-    default:;
+    default: break;
     }
-    return 1;
+    return Exception::LoadAccessFault;
 }
 
-void CPU_NAME::MemoryStore(uint64_t addr, uint64_t size, uint64_t value) {
+std::variant<uint64_t, Exception> CPU_NAME::MemoryStore(uint64_t addr, uint64_t size, uint64_t value) {
     switch (size) {
     case 8:  Memory->MemoryStore8(addr, value);  break;
     case 16: Memory->MemoryStore16(addr, value); break;
     case 32: Memory->MemoryStore32(addr, value); break;
     case 64: Memory->MemoryStore64(addr, value); break;
-    default:;
+    default: return Exception::StoreAMOAccessFault;
     }
+    return (uint64_t)0;
 }
 
 void CPU_NAME::DumpRegisters() {
@@ -87,7 +98,7 @@ void CPU_NAME::csrWrite(uint64_t csr, uint64_t value) {
     CSRegisters[csr] = value;
 }
 
-int CPU_NAME::Execute(uint32_t inst) {
+std::variant<uint64_t, Exception> CPU_NAME::Execute(uint32_t inst) {
     int opcode = inst & 0x7f;           // opcode in bits 6..0
     int funct3 = (inst >> 12) & 0x7;    // funct3 in bits 14..12
     int funct7 = (inst >> 25) & 0x7f;   // funct7 in bits 31..25
@@ -152,7 +163,7 @@ int CPU_NAME::Execute(uint32_t inst) {
                     fprintf(stderr, 
                             "[-] ERROR-> opcode:0x%x, funct3:0x%x, funct7:0x%x\n"
                             , opcode, funct3, funct7);
-                    return 0;
+                    return Exception::IllegalInstruction;
             } break;
 
         case R_TYPE:  
@@ -179,7 +190,7 @@ int CPU_NAME::Execute(uint32_t inst) {
                     fprintf(stderr, 
                             "[-] ERROR-> opcode:0x%x, funct3:0x%x, funct7:0x%x\n"
                             , opcode, funct3, funct7);
-                    return 0;
+                    return Exception::IllegalInstruction;
             } break;
 
         case FENCE: exec_FENCE(inst); break;
@@ -218,7 +229,7 @@ int CPU_NAME::Execute(uint32_t inst) {
 
         case CSR:
             switch (funct3) {
-                case ECALLBREAK:    exec_ECALLBREAK(inst); break;
+                case ECALLBREAK:    return exec_ECALLBREAK(inst); break;
                 case CSRRW  :  exec_CSRRW(inst); break;  
                 case CSRRS  :  exec_CSRRS(inst); break;  
                 case CSRRC  :  exec_CSRRC(inst); break;  
@@ -227,7 +238,7 @@ int CPU_NAME::Execute(uint32_t inst) {
                 case CSRRCI :  exec_CSRRCI(inst); break; 
                 default:
                     fprintf(stderr, "[-] ERROR-> opcode:0x%x, funct3:0x%x, funct7:0x%x\n", opcode, funct3, funct7);
-                    return 0;
+                    return Exception::IllegalInstruction;
             } break;
 
         case AMO_W:
@@ -245,7 +256,7 @@ int CPU_NAME::Execute(uint32_t inst) {
                 case AMOMAXU_W :  exec_AMOMAXU_W(inst); break; 
                 default:
                     fprintf(stderr, "[-] ERROR-> opcode:0x%x, funct3:0x%x, funct7:0x%x\n", opcode, funct3, funct7);
-                    return 0;
+                    return Exception::IllegalInstruction;
             } break;
 
         case AMO_D:
@@ -263,15 +274,15 @@ int CPU_NAME::Execute(uint32_t inst) {
                 case AMOMAXU_D :  exec_AMOMAXU_D(inst); break; // RV64A Standard
                 default:
                     fprintf(stderr, "[-] ERROR-> opcode:0x%x, funct3:0x%x, funct7:0x%x\n", opcode, funct3, funct7);
-                    return 0;
+                    return Exception::IllegalInstruction;
             } break;
 
         case 0x00:
-            return 0;
+            return Exception::IllegalInstruction;
 
         default:
             fprintf(stderr, "[-] ERROR-> opcode:0x%x, funct3:0x%x, funct3:0x%x\n", opcode, funct3, funct7);
-            return 0;
+            return Exception::IllegalInstruction;
             /*exit(1);*/
     }
 }

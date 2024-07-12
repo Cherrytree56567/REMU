@@ -236,6 +236,7 @@
 #include <iostream>
 #include <cstring>
 #include <iomanip>
+#include <variant>
 #include <fstream>
 #include <string>
 #include <map>
@@ -244,16 +245,16 @@
 
 class CPUTest: public CPU {
 public:
-    CPUTest(std::shared_ptr<RAM> ram);
+    CPUTest(std::shared_ptr<Bus> BUS);
 
-    virtual uint64_t MemoryLoad(uint64_t addr, uint64_t size) override;
-    virtual void MemoryStore(uint64_t addr, uint64_t size, uint64_t value) override;
+    virtual std::variant<uint64_t, Exception> MemoryLoad(uint64_t addr, uint64_t size) override;
+    virtual std::variant<uint64_t, Exception> MemoryStore(uint64_t addr, uint64_t size, uint64_t value) override;
 
     virtual uint64_t csrRead(uint64_t csr) override;
     virtual void csrWrite(uint64_t csr, uint64_t value) override;
 
-    virtual uint32_t Fetch() override;
-    virtual int Execute(uint32_t inst) override;
+    virtual std::variant<uint64_t, Exception> Fetch() override;
+    virtual std::variant<uint64_t, Exception> Execute(uint32_t inst) override;
     virtual void DumpRegisters() override;
 
     virtual bool Loop() override;
@@ -299,9 +300,9 @@ public:
     virtual void exec_OR(uint32_t inst) override;
     virtual void exec_AND(uint32_t inst) override;
     virtual void exec_FENCE(uint32_t inst) override;
-    virtual void exec_ECALL(uint32_t inst) override;
-    virtual void exec_EBREAK(uint32_t inst) override;
-    virtual void exec_ECALLBREAK(uint32_t inst) override;
+    virtual std::variant<uint64_t, Exception> exec_ECALL(uint32_t inst);
+    virtual std::variant<uint64_t, Exception> exec_EBREAK(uint32_t inst);
+    virtual std::variant<uint64_t, Exception> exec_ECALLBREAK(uint32_t inst);
     virtual void exec_ADDIW(uint32_t inst) override;
     virtual void exec_SLLIW(uint32_t inst) override;
     virtual void exec_SRLIW(uint32_t inst) override;

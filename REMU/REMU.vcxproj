@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bus.cpp" />
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="CPUTest.cpp" />
     <ClCompile Include="Machine.cpp" />
@@ -31,6 +32,7 @@
     <ClCompile Include="Trap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bus.h" />
     <ClInclude Include="CPU.h" />
     <ClInclude Include="CPUTest.h" />
     <ClInclude Include="Machine.h" />

@@ -8,9 +8,9 @@ public:
 
 	virtual bool Loop();
 	virtual std::shared_ptr<CPU> ReturnCPU() { return cpu; }
-	virtual std::shared_ptr<RAM> ReturnRAM() { return ram; }
+	virtual std::shared_ptr<Bus> ReturnBUS() { return bus; }
 private:
 	std::shared_ptr<CPU> cpu;
-	std::shared_ptr<RAM> ram;
+	std::shared_ptr<Bus> bus;
 };
 

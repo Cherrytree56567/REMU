@@ -2,8 +2,8 @@
 #include "MachineTest.h"
 
 MACHINE_NAME::MACHINE_NAME(int RamSize) : Machine(RamSize) {
-	ram = std::make_shared<RAM>(RamSize);
-	cpu = std::make_shared<CPUTest>(ram);
+	bus = std::make_shared<Bus>(RamSize);
+	cpu = std::make_shared<CPUTest>(bus);
 }
 
 bool MACHINE_NAME::Loop() {
@@ -35,5 +35,5 @@ void MACHINE_NAME::read_file(const std::string& filename) {
     }
     std::cout << std::dec << "\n";
 
-    std::memcpy(ram->ReturnMemory()->data(), buffer.data(), fileLen * sizeof(uint8_t));
+    std::memcpy(bus->GetRam()->ReturnMemory()->data(), buffer.data(), fileLen * sizeof(uint8_t));
 }

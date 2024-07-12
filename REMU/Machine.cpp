@@ -2,8 +2,8 @@
 #include "Machine.h"
 
 MACHINE_NAME::MACHINE_NAME(int RamSize) {
-	ram = std::make_shared<RAM>(RamSize);
-	cpu = std::make_shared<CPU>(ram);
+	bus = std::make_shared<Bus>(RamSize);
+	cpu = std::make_shared<CPU>(bus);
 }
 
 bool MACHINE_NAME::Loop() {
