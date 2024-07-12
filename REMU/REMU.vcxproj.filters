@@ -37,6 +37,9 @@
     <Filter Include="Source Files\Machine\Machines\Test64">
       <UniqueIdentifier>{28803833-464d-4861-a478-52e13b4f1d0a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\CPU\Trap">
+      <UniqueIdentifier>{079d3456-3083-4b8a-8dcb-20994950ad85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,6 +69,9 @@
     <ClCompile Include="MachineTest.cpp">
       <Filter>Source Files\Machine\Machines\Test64</Filter>
     </ClCompile>
+    <ClCompile Include="Trap.cpp">
+      <Filter>Source Files\CPU\Trap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU.h">
@@ -85,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="MachineTest.h">
       <Filter>Source Files\Machine\Machines\Test64</Filter>
+    </ClInclude>
+    <ClInclude Include="Trap.h">
+      <Filter>Source Files\CPU\Trap</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

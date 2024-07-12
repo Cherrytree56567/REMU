@@ -68,31 +68,26 @@ D:\REMU\REMU\CPUTest.cpp(78,16): warning C4477: 'printf' : format string '%#-13.
   
   Machine.cpp
   MachineTest.cpp
+  main.cpp
   OpcodeHelpers.cpp
   Opcodes.cpp
 D:\REMU\REMU\Opcodes.cpp(160,49): warning C4018: '<': signed/unsigned mismatch
 D:\REMU\REMU\Opcodes.cpp(218,49): warning C4018: '<': signed/unsigned mismatch
-D:\REMU\REMU\Opcodes.cpp(338,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\Opcodes.cpp(345,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\Opcodes.cpp(352,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
 D:\REMU\REMU\Opcodes.cpp(359,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\Opcodes.cpp(374,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\Opcodes.cpp(381,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\Opcodes.cpp(388,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\Opcodes.cpp(395,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+D:\REMU\REMU\Opcodes.cpp(366,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+D:\REMU\REMU\Opcodes.cpp(373,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+D:\REMU\REMU\Opcodes.cpp(380,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
   OpcodesTest.cpp
 D:\REMU\REMU\OpcodesTest.cpp(160,49): warning C4018: '<': signed/unsigned mismatch
 D:\REMU\REMU\OpcodesTest.cpp(218,49): warning C4018: '<': signed/unsigned mismatch
-D:\REMU\REMU\OpcodesTest.cpp(338,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\OpcodesTest.cpp(345,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\OpcodesTest.cpp(352,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
 D:\REMU\REMU\OpcodesTest.cpp(359,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\OpcodesTest.cpp(374,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\OpcodesTest.cpp(381,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\OpcodesTest.cpp(388,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\OpcodesTest.cpp(395,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-  main.cpp
+D:\REMU\REMU\OpcodesTest.cpp(366,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+D:\REMU\REMU\OpcodesTest.cpp(373,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+D:\REMU\REMU\OpcodesTest.cpp(380,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+  RAM.cpp
+  Trap.cpp
+D:\REMU\REMU\Trap.cpp(23,106): warning C4554: '&': check operator precedence for possible error; use parentheses to clarify precedence
   Generating Code...
-D:\REMU\REMU\CPUTest.cpp(259,1): warning C4715: 'CPUTest::Execute': not all control paths return a value
-D:\REMU\REMU\CPU.cpp(259,1): warning C4715: 'CPU::Execute': not all control paths return a value
+D:\REMU\REMU\CPUTest.cpp(273,1): warning C4715: 'CPUTest::Execute': not all control paths return a value
+D:\REMU\REMU\CPU.cpp(277,1): warning C4715: 'CPU::Execute': not all control paths return a value
   REMU.vcxproj -> D:\REMU\x64\Debug\REMU.exe

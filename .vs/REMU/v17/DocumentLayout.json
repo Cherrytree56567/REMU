@@ -3,24 +3,32 @@
   "WorkspaceRootPath": "D:\\REMU\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\Opcodes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\Opcodes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\CPUTest.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\CPUTest.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\CPU.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\CPU.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\CPU.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\CPU.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\CPU.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\CPU.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\Trap.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\Trap.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\Trap.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\Trap.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\CPUTest.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\CPUTest.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\CPUTest.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\CPUTest.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\RAM.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -29,6 +37,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\RAM.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\RAM.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\Opcodes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\Opcodes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,11 +50,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
+              "Title": "CPUTest.h",
+              "DocumentMoniker": "D:\\REMU\\REMU\\CPUTest.h",
+              "RelativeDocumentMoniker": "REMU\\CPUTest.h",
+              "ToolTip": "D:\\REMU\\REMU\\CPUTest.h",
+              "RelativeToolTip": "REMU\\CPUTest.h",
+              "ViewState": "AQIAAFkBAAAAAAAAAAAAAGQBAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-07-12T03:26:00.351Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Trap.cpp",
+              "DocumentMoniker": "D:\\REMU\\REMU\\Trap.cpp",
+              "RelativeDocumentMoniker": "REMU\\Trap.cpp",
+              "ToolTip": "D:\\REMU\\REMU\\Trap.cpp",
+              "RelativeToolTip": "REMU\\Trap.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAEAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-07-12T03:54:46.479Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Trap.h",
+              "DocumentMoniker": "D:\\REMU\\REMU\\Trap.h",
+              "RelativeDocumentMoniker": "REMU\\Trap.h",
+              "ToolTip": "D:\\REMU\\REMU\\Trap.h",
+              "RelativeToolTip": "REMU\\Trap.h",
+              "ViewState": "AQIAABUAAAAAAAAAAAAAACgAAAAcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-07-12T03:16:36.262Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "Opcodes.cpp",
               "DocumentMoniker": "D:\\REMU\\REMU\\Opcodes.cpp",
               "RelativeDocumentMoniker": "REMU\\Opcodes.cpp",
@@ -55,7 +106,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "CPUTest.cpp",
               "DocumentMoniker": "D:\\REMU\\REMU\\CPUTest.cpp",
               "RelativeDocumentMoniker": "REMU\\CPUTest.cpp",
@@ -68,46 +119,46 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "CPU.cpp",
               "DocumentMoniker": "D:\\REMU\\REMU\\CPU.cpp",
               "RelativeDocumentMoniker": "REMU\\CPU.cpp",
               "ToolTip": "D:\\REMU\\REMU\\CPU.cpp",
               "RelativeToolTip": "REMU\\CPU.cpp",
-              "ViewState": "AQIAANkAAAAAAAAAAAAAANoAAAAIAAAA",
+              "ViewState": "AQIAAKYAAAAAAAAAAAAAANoAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-07-11T05:55:42.553Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "CPU.h",
               "DocumentMoniker": "D:\\REMU\\REMU\\CPU.h",
               "RelativeDocumentMoniker": "REMU\\CPU.h",
               "ToolTip": "D:\\REMU\\REMU\\CPU.h",
               "RelativeToolTip": "REMU\\CPU.h",
-              "ViewState": "AQIAAMsAAAAAAAAAAAAAAOcAAAAEAAAA",
+              "ViewState": "AQIAAPYAAAAAAAAAAAAAAP8AAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-07-11T04:29:47.315Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
               "Title": "main.cpp",
               "DocumentMoniker": "D:\\REMU\\REMU\\main.cpp",
               "RelativeDocumentMoniker": "REMU\\main.cpp",
               "ToolTip": "D:\\REMU\\REMU\\main.cpp",
               "RelativeToolTip": "REMU\\main.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAnAAAA",
+              "ViewState": "AQIAACEAAAAAAAAAAAAAACYAAAAXAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-07-11T03:02:31.522Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "RAM.h",
               "DocumentMoniker": "D:\\REMU\\REMU\\RAM.h",
               "RelativeDocumentMoniker": "REMU\\RAM.h",
@@ -120,7 +171,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "RAM.cpp",
               "DocumentMoniker": "D:\\REMU\\REMU\\RAM.cpp",
               "RelativeDocumentMoniker": "REMU\\RAM.cpp",

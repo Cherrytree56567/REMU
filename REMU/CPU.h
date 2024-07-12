@@ -241,7 +241,7 @@
 #include <map>
 #include "RAM.h"
 #include "OpcodeHelpers.h"
-
+#include "Trap.h"
 
 enum Mode {
     User = 0b00,
@@ -253,7 +253,7 @@ class CPU {
 public:
     CPU(std::shared_ptr<RAM> ram);
 
-    virtual uint64_t MemoryLoad(uint64_t addr, uint64_t size);
+    virtual std::pair<uint64_t, Exception> MemoryLoad(uint64_t addr, uint64_t size);
     virtual void MemoryStore(uint64_t addr, uint64_t size, uint64_t value);
 
     virtual uint64_t csrRead(uint64_t csr);
@@ -264,8 +264,6 @@ public:
     virtual void DumpRegisters();
 
     virtual bool Loop();
-
-private:
 
     virtual void exec_LUI(uint32_t inst);
     virtual void exec_AUIPC(uint32_t inst);

@@ -258,8 +258,6 @@ public:
 
     virtual bool Loop() override;
 
-private:
-
     virtual void exec_LUI(uint32_t inst) override;
     virtual void exec_AUIPC(uint32_t inst) override;
     virtual void exec_JAL(uint32_t inst) override;

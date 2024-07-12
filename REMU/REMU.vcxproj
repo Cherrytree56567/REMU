@@ -28,6 +28,7 @@
     <ClCompile Include="Opcodes.cpp" />
     <ClCompile Include="OpcodesTest.cpp" />
     <ClCompile Include="RAM.cpp" />
+    <ClCompile Include="Trap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="MachineTest.h" />
     <ClInclude Include="OpcodeHelpers.h" />
     <ClInclude Include="RAM.h" />
+    <ClInclude Include="Trap.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -123,6 +125,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
