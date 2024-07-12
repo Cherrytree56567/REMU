@@ -258,10 +258,20 @@ void CPU_NAME::exec_ECALL(uint32_t inst) {}
 void CPU_NAME::exec_EBREAK(uint32_t inst) {}
 
 void CPU_NAME::exec_ECALLBREAK(uint32_t inst) {
-    if (imm_I(inst) == 0x0)
+    int funct7 = (inst >> 25) & 0x7f;
+    if (imm_I(inst) == 0x0) {
         exec_ECALL(inst);
-    if (imm_I(inst) == 0x1)
+    } else if (imm_I(inst) == 0x1) {
         exec_EBREAK(inst);
+    } else if (rs2(inst) == 0x2) {
+        if (funct7 == 0x8) {
+            exec_SRET(inst);
+        } else if (funct7 == 0x18) {
+            exec_MRET(inst);
+        }
+    } else if (funct7 == 0x9) {
+        exec_SFENCE_VMA(inst);
+    }
     debug("ecallbreak\n");
 }
 
@@ -481,4 +491,44 @@ void CPU_NAME::exec_CSRRSI(uint32_t inst) {
 void CPU_NAME::exec_CSRRCI(uint32_t inst) {
     csrWrite(csr(inst), CSRegisters[csr(inst)] & !rs1(inst));
     debug("csrrci\n");
+}
+void CPU_NAME::exec_SFENCE_VMA(uint32_t inst) {
+    // Do Nothing
+    debug("sfence.vma\n");
+}
+void CPU_NAME::exec_SRET(uint32_t inst) {
+    switch ((csrRead(SSTATUS) >> 8) & 1) {
+        case 1: CurrentMode = Mode::Supervisor; break;
+        default: CurrentMode = Mode::User; break;
+    };
+
+    if (((csrRead(SSTATUS) >> 5) & 1) == 1) {
+        csrWrite(SSTATUS, (csrRead(SSTATUS) | (1 << 1)));
+    } else {
+        csrWrite(SSTATUS, (csrRead(SSTATUS) & !(1 << 1)));
+    }
+
+    csrWrite(SSTATUS, csrRead(SSTATUS) | (1 << 5));
+    csrWrite(SSTATUS, csrRead(SSTATUS) & !(1 << 8));
+    debug("sret\n");
+}
+void CPU_NAME::exec_MRET(uint32_t inst) {
+    ProgramCounter = csrRead(MEPC);
+    
+    switch ((csrRead(MSTATUS) >> 11) & 0b11) {
+        case 2: CurrentMode = Mode::Machine; break;
+        case 1: CurrentMode = Mode::Supervisor; break;
+        default: CurrentMode = Mode::User; break;
+    };
+
+    if (((csrRead(MSTATUS) >> 7) & 1) == 1) {
+        csrWrite(MSTATUS, (csrRead(MSTATUS) | (1 << 3)));
+    } else {
+        csrWrite(MSTATUS, (csrRead(MSTATUS) & !(1 << 3)));
+    }
+
+    csrWrite(MSTATUS, (csrRead(MSTATUS) | (1 << 7)));
+
+    csrWrite(MSTATUS, (csrRead(MSTATUS) & !(0b11 << 11)));
+    debug("mret\n");
 }

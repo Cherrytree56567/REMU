@@ -353,6 +353,9 @@ private:
     virtual void exec_CSRRWI(uint32_t inst);
     virtual void exec_CSRRSI(uint32_t inst);
     virtual void exec_CSRRCI(uint32_t inst);
+    virtual void exec_SFENCE_VMA(uint32_t inst);
+    virtual void exec_SRET(uint32_t inst);
+    virtual void exec_MRET(uint32_t inst);
 
     void debug(std::string s);
 

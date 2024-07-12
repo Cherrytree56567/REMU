@@ -136,14 +136,14 @@ int CPU_NAME::Execute(uint32_t inst) {
         case I_TYPE:  
             switch (funct3) {
                 case ADDI:  exec_ADDI(inst); break;  // RV32I Base
-                case SLLI:  exec_SLLI(inst); break;  // RV32I Base + RV64I Base
+                case SLLI:  exec_SLLI(inst); break;  // RV64I Base
                 case SLTI:  exec_SLTI(inst); break;  // RV32I Base
                 case SLTIU: exec_SLTIU(inst); break;  // RV32I Base
                 case XORI:  exec_XORI(inst); break;  // RV32I Base
                 case SRI:   
                     switch (funct7) {
-                        case SRLI:  exec_SRLI(inst); break;  // RV32I Base + RV64I Base
-                        case SRAI:  exec_SRAI(inst); break;  // RV32I Base + RV64I Base
+                        case SRLI:  exec_SRLI(inst); break;  // RV64I Base
+                        case SRAI:  exec_SRAI(inst); break;  // RV64I Base
                         default: ;
                     } break;
                 case ORI:   exec_ORI(inst); break;  // RV32I Base

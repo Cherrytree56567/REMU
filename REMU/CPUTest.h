@@ -197,7 +197,7 @@
     #define REMUW   0x7
 
 #define CSR 0x73
-    #define ECALLBREAK    0x00     // contains both ECALL and EBREAK
+    #define ECALLBREAK    0x00     // contains both ECALL and EBREAK and SRET and MRET and SFENCE.VMA
     #define CSRRW   0x01
     #define CSRRS   0x02
     #define CSRRC   0x03
@@ -346,6 +346,9 @@ private:
     virtual void exec_CSRRWI(uint32_t inst) override;
     virtual void exec_CSRRSI(uint32_t inst) override;
     virtual void exec_CSRRCI(uint32_t inst) override;
+    virtual void exec_SFENCE_VMA(uint32_t inst) override;
+    virtual void exec_SRET(uint32_t inst) override;
+    virtual void exec_MRET(uint32_t inst) override;
 
     void debug(std::string s);
 
