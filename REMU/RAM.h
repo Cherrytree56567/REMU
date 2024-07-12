@@ -1,7 +1,10 @@
 #pragma once
-#define MEMORY_BASE 0x80000000
 #include <memory>
 #include <vector>
+#include <variant>
+#include "Trap.h"
+
+#define MEMORY_BASE 0x80000000
 
 class RAM {
 public:
@@ -9,6 +12,11 @@ public:
 
 	std::shared_ptr<std::vector<uint8_t>> ReturnMemory();
 
+    std::variant<uint64_t, Exception> Load(uint64_t addr, uint64_t size);
+
+    std::variant<uint64_t, Exception> Store(uint64_t addr, uint64_t size, uint64_t value);
+
+private:
     uint64_t MemoryLoad8(uint64_t addr);
     uint64_t MemoryLoad16(uint64_t addr);
     uint64_t MemoryLoad32(uint64_t addr);
@@ -19,7 +27,6 @@ public:
     void MemoryStore32(uint64_t addr, uint64_t value);
     void MemoryStore64(uint64_t addr, uint64_t value);
 
-private:
 	std::shared_ptr<std::vector<uint8_t>> Memory;
     size_t MemorySize;
 };

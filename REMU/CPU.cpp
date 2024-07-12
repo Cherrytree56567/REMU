@@ -9,6 +9,10 @@ CPU_NAME::CPU_NAME(std::shared_ptr<Bus> BUS) {
     Memory = bus->GetRam();
 }
 
+void CPU_NAME::adcp(std::any cpp) {
+    cp = cpp;
+}
+
 std::variant<uint64_t, Exception> CPU_NAME::Fetch() {
     return MemoryLoad(ProgramCounter, 32);
 }
@@ -19,20 +23,31 @@ void CPU_NAME::debug(std::string s) {
 
 bool CPU_NAME::Loop() {
     uint32_t inst;
-    try {
-        inst = std::get<uint64_t>(Fetch());
-    } catch (const std::bad_variant_access& e) {
-        return false;
+    auto result = Fetch();
+    if (std::holds_alternative<uint64_t>(result)) {
+        inst = std::get<uint64_t>(result);
+    } else {
+        ExceptionTrap ext(std::get<Exception>(result));
+        ext.take_trap(std::any_cast<std::shared_ptr<CPU>>(cp));
+        if (ext.is_fatal(std::get<Exception>(result))) {
+            return false;
+        }
+        inst = 0;
     }
 
     ProgramCounter += 4;
 
-    try {
-        if (std::get<uint64_t>(Execute(inst)) != 0) {
+    auto resulta = Execute(inst);
+
+    if (std::holds_alternative<uint64_t>(resulta)) {
+        std::cout << "";
+    }
+    else {
+        ExceptionTrap ext(std::get<Exception>(resulta));
+        ext.take_trap(std::any_cast<std::shared_ptr<CPU>>(cp));
+        if (ext.is_fatal(std::get<Exception>(resulta))) {
             return false;
         }
-    } catch (const std::bad_variant_access& e) {
-        return false;
     }
 
     if (ProgramCounter == 0)
@@ -42,25 +57,11 @@ bool CPU_NAME::Loop() {
 }
 
 std::variant<uint64_t, Exception> CPU_NAME::MemoryLoad(uint64_t addr, uint64_t size) {
-    switch (size) {
-    case 8:  return Memory->MemoryLoad8(addr);  break;
-    case 16: return Memory->MemoryLoad16(addr); break;
-    case 32: return Memory->MemoryLoad32(addr); break;
-    case 64: return Memory->MemoryLoad64(addr); break;
-    default: break;
-    }
-    return Exception::LoadAccessFault;
+    return bus->Load(addr, size);
 }
 
 std::variant<uint64_t, Exception> CPU_NAME::MemoryStore(uint64_t addr, uint64_t size, uint64_t value) {
-    switch (size) {
-    case 8:  Memory->MemoryStore8(addr, value);  break;
-    case 16: Memory->MemoryStore16(addr, value); break;
-    case 32: Memory->MemoryStore32(addr, value); break;
-    case 64: Memory->MemoryStore64(addr, value); break;
-    default: return Exception::StoreAMOAccessFault;
-    }
-    return (uint64_t)0;
+    return bus->Store(addr, size, value);
 }
 
 void CPU_NAME::DumpRegisters() {
@@ -285,4 +286,5 @@ std::variant<uint64_t, Exception> CPU_NAME::Execute(uint32_t inst) {
             return Exception::IllegalInstruction;
             /*exit(1);*/
     }
+    return (uint64_t)0;
 }

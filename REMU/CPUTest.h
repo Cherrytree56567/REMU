@@ -257,6 +257,8 @@ public:
     virtual std::variant<uint64_t, Exception> Execute(uint32_t inst) override;
     virtual void DumpRegisters() override;
 
+    virtual void adcp(std::any cpp) override;
+
     virtual bool Loop() override;
 
     virtual void exec_LUI(uint32_t inst) override;
@@ -351,6 +353,7 @@ public:
 
     void debug(std::string s);
 
+    std::any cp;
     std::shared_ptr<RAM> Memory;
     uint64_t Registers[32]; // 32 64-bit Registers
     uint64_t ProgramCounter; // Program Counter

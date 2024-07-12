@@ -265,6 +265,8 @@ public:
     virtual std::variant<uint64_t, Exception> Execute(uint32_t inst);
     virtual void DumpRegisters();
 
+    virtual void adcp(std::any cpp);
+
     virtual bool Loop();
 
     virtual void exec_LUI(uint32_t inst);
@@ -361,6 +363,7 @@ public:
 
     std::shared_ptr<Bus> bus;
     std::shared_ptr<RAM> Memory;
+    std::any cp;
     uint64_t Registers[32]; // 32 64-bit Registers
     uint64_t ProgramCounter; // Program Counter
     uint64_t CSRegisters[4069]; // Control and Status Registers

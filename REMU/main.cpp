@@ -35,7 +35,7 @@
 #include "MachineTest.h"
 
 int main(int argc, char *argv[]) {
-    std::shared_ptr<MachineTest> mac = std::make_shared<MachineTest>(100);
+    std::shared_ptr<MachineTest> mac = std::make_shared<MachineTest>(128);
     mac->read_file("fib.bin"); // argv[1]
 
     while (mac->Loop()) {

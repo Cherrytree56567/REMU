@@ -1,7 +1,7 @@
 #include "Trap.h"
 #include "CPU.h"
 
-bool is_fatal(Exception ex) {
+bool ExceptionTrap::is_fatal(Exception ex) {
     switch (ex) {
     case Exception::InstructionAddressMisaligned:
     case Exception::InstructionAccessFault:

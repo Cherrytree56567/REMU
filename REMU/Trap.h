@@ -34,8 +34,8 @@ public:
         return static_cast<uint64_t>(exception);
     }
 
+    bool is_fatal(Exception ex);
+
 private:
     Exception exception;
 };
-
-bool is_fatal(Exception ex);
