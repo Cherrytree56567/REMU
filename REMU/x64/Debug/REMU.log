@@ -1,93 +1,42 @@
-﻿  CPU.cpp
-D:\REMU\REMU\CPU.cpp(12,19): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\CPU.cpp(75,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
-  D:\REMU\REMU\CPU.cpp(75,16):
+﻿  CPUTest.cpp
+D:\REMU\REMU\CPUTest.cpp(23,34): warning C4244: '=': conversion from '_First' to 'uint32_t', possible loss of data
+D:\REMU\REMU\CPUTest.cpp(23,34): warning C4244:         with
+D:\REMU\REMU\CPUTest.cpp(23,34): warning C4244:         [
+D:\REMU\REMU\CPUTest.cpp(23,34): warning C4244:             _First=uint64_t
+D:\REMU\REMU\CPUTest.cpp(23,34): warning C4244:         ]
+D:\REMU\REMU\CPUTest.cpp(25,43): warning C4101: 'e': unreferenced local variable
+D:\REMU\REMU\CPUTest.cpp(37,43): warning C4101: 'e': unreferenced local variable
+D:\REMU\REMU\CPUTest.cpp(89,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
+  D:\REMU\REMU\CPUTest.cpp(89,16):
   consider using '%llx' in the format string
-  D:\REMU\REMU\CPU.cpp(75,16):
+  D:\REMU\REMU\CPUTest.cpp(89,16):
   consider using '%Ix' in the format string
-  D:\REMU\REMU\CPU.cpp(75,16):
+  D:\REMU\REMU\CPUTest.cpp(89,16):
   consider using '%I64x' in the format string
   
-D:\REMU\REMU\CPU.cpp(76,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
-  D:\REMU\REMU\CPU.cpp(76,16):
+D:\REMU\REMU\CPUTest.cpp(90,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
+  D:\REMU\REMU\CPUTest.cpp(90,16):
   consider using '%llx' in the format string
-  D:\REMU\REMU\CPU.cpp(76,16):
+  D:\REMU\REMU\CPUTest.cpp(90,16):
   consider using '%Ix' in the format string
-  D:\REMU\REMU\CPU.cpp(76,16):
+  D:\REMU\REMU\CPUTest.cpp(90,16):
   consider using '%I64x' in the format string
   
-D:\REMU\REMU\CPU.cpp(77,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
-  D:\REMU\REMU\CPU.cpp(77,16):
+D:\REMU\REMU\CPUTest.cpp(91,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
+  D:\REMU\REMU\CPUTest.cpp(91,16):
   consider using '%llx' in the format string
-  D:\REMU\REMU\CPU.cpp(77,16):
+  D:\REMU\REMU\CPUTest.cpp(91,16):
   consider using '%Ix' in the format string
-  D:\REMU\REMU\CPU.cpp(77,16):
+  D:\REMU\REMU\CPUTest.cpp(91,16):
   consider using '%I64x' in the format string
   
-D:\REMU\REMU\CPU.cpp(78,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
-  D:\REMU\REMU\CPU.cpp(78,16):
+D:\REMU\REMU\CPUTest.cpp(92,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
+  D:\REMU\REMU\CPUTest.cpp(92,16):
   consider using '%llx' in the format string
-  D:\REMU\REMU\CPU.cpp(78,16):
+  D:\REMU\REMU\CPUTest.cpp(92,16):
   consider using '%Ix' in the format string
-  D:\REMU\REMU\CPU.cpp(78,16):
+  D:\REMU\REMU\CPUTest.cpp(92,16):
   consider using '%I64x' in the format string
   
-  CPUTest.cpp
-D:\REMU\REMU\CPUTest.cpp(12,19): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\CPUTest.cpp(75,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
-  D:\REMU\REMU\CPUTest.cpp(75,16):
-  consider using '%llx' in the format string
-  D:\REMU\REMU\CPUTest.cpp(75,16):
-  consider using '%Ix' in the format string
-  D:\REMU\REMU\CPUTest.cpp(75,16):
-  consider using '%I64x' in the format string
-  
-D:\REMU\REMU\CPUTest.cpp(76,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
-  D:\REMU\REMU\CPUTest.cpp(76,16):
-  consider using '%llx' in the format string
-  D:\REMU\REMU\CPUTest.cpp(76,16):
-  consider using '%Ix' in the format string
-  D:\REMU\REMU\CPUTest.cpp(76,16):
-  consider using '%I64x' in the format string
-  
-D:\REMU\REMU\CPUTest.cpp(77,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
-  D:\REMU\REMU\CPUTest.cpp(77,16):
-  consider using '%llx' in the format string
-  D:\REMU\REMU\CPUTest.cpp(77,16):
-  consider using '%Ix' in the format string
-  D:\REMU\REMU\CPUTest.cpp(77,16):
-  consider using '%I64x' in the format string
-  
-D:\REMU\REMU\CPUTest.cpp(78,16): warning C4477: 'printf' : format string '%#-13.2lx' requires an argument of type 'unsigned long', but variadic argument 2 has type 'uint64_t'
-  D:\REMU\REMU\CPUTest.cpp(78,16):
-  consider using '%llx' in the format string
-  D:\REMU\REMU\CPUTest.cpp(78,16):
-  consider using '%Ix' in the format string
-  D:\REMU\REMU\CPUTest.cpp(78,16):
-  consider using '%I64x' in the format string
-  
-  Machine.cpp
-  MachineTest.cpp
-  main.cpp
-  OpcodeHelpers.cpp
-  Opcodes.cpp
-D:\REMU\REMU\Opcodes.cpp(160,49): warning C4018: '<': signed/unsigned mismatch
-D:\REMU\REMU\Opcodes.cpp(218,49): warning C4018: '<': signed/unsigned mismatch
-D:\REMU\REMU\Opcodes.cpp(359,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\Opcodes.cpp(366,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\Opcodes.cpp(373,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\Opcodes.cpp(380,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-  OpcodesTest.cpp
-D:\REMU\REMU\OpcodesTest.cpp(160,49): warning C4018: '<': signed/unsigned mismatch
-D:\REMU\REMU\OpcodesTest.cpp(218,49): warning C4018: '<': signed/unsigned mismatch
-D:\REMU\REMU\OpcodesTest.cpp(359,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\OpcodesTest.cpp(366,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\OpcodesTest.cpp(373,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-D:\REMU\REMU\OpcodesTest.cpp(380,18): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-  RAM.cpp
-  Trap.cpp
-D:\REMU\REMU\Trap.cpp(23,106): warning C4554: '&': check operator precedence for possible error; use parentheses to clarify precedence
-  Generating Code...
-D:\REMU\REMU\CPUTest.cpp(273,1): warning C4715: 'CPUTest::Execute': not all control paths return a value
-D:\REMU\REMU\CPU.cpp(277,1): warning C4715: 'CPU::Execute': not all control paths return a value
+D:\REMU\REMU\CPUTest.cpp(287,1): warning C4715: 'CPUTest::Execute': not all control paths return a value
   REMU.vcxproj -> D:\REMU\x64\Debug\REMU.exe
