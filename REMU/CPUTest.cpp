@@ -244,6 +244,24 @@ int CPU_NAME::Execute(uint32_t inst) {
                     return 0;
             } break;
 
+        case AMO_D:
+            switch (funct7 >> 2) { // since, funct[1:0] = aq, rl
+                case LR_D      :  exec_LR_D(inst); break; // RV64A Standard
+                case SC_D      :  exec_SC_D(inst); break; // RV64A Standard
+                case AMOSWAP_D :  exec_AMOSWAP_D(inst); break; // RV64 Standard 
+                case AMOADD_D  :  exec_AMOADD_D(inst); break; // RV64A Standard
+                case AMOXOR_D  :  exec_AMOXOR_D(inst); break; // RV64A Standard
+                case AMOAND_D  :  exec_AMOAND_D(inst); break; // RV64A Standard
+                case AMOOR_D  :  exec_AMOOR_D(inst); break; // RV64A Standard
+                case AMOMIN_D  :  exec_AMOMIN_D(inst); break; // RV64A Standard
+                case AMOMAX_D  :  exec_AMOMAX_D(inst); break; // RV64A Standard
+                case AMOMINU_D :  exec_AMOMINU_D(inst); break; // RV64A Standard
+                case AMOMAXU_D :  exec_AMOMAXU_D(inst); break; // RV64A Standard
+                default:
+                    fprintf(stderr, "[-] ERROR-> opcode:0x%x, funct3:0x%x, funct7:0x%x\n", opcode, funct3, funct7);
+                    return 0;
+            } break;
+
         case 0x00:
             return 0;
 

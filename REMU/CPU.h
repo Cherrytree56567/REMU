@@ -218,7 +218,7 @@
     #define AMOMINU_W   0x18
     #define AMOMAXU_W   0x1c
 
-#define AMO_D 0x2f
+#define AMO_D 0x3f
     #define LR_D        0x02
     #define SC_D        0x03
     #define AMOSWAP_D   0x01
@@ -241,6 +241,13 @@
 #include <map>
 #include "RAM.h"
 #include "OpcodeHelpers.h"
+
+
+enum Mode {
+    User = 0b00,
+    Supervisor = 0b01,
+    Machine = 0b11
+};
 
 class CPU {
 public:
@@ -353,4 +360,5 @@ private:
     uint64_t Registers[32]; // 32 64-bit Registers
     uint64_t ProgramCounter; // Program Counter
     uint64_t CSRegisters[4069]; // Control and Status Registers
+    Mode CurrentMode = Mode::Machine;
 };
