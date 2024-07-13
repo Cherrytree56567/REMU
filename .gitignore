@@ -1,12 +1,4 @@
 .vs
-.exe
-.obj
-*.vs
 *.exe
 *.obj
-*.vsidx
-*.ipch
-.vs/*
-*.vs/*
-/.vs
-*.ipch
+x64
