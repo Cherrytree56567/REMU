@@ -258,6 +258,8 @@ public:
     std::variant<uint64_t, Exception> MemoryLoad(uint64_t addr, uint64_t size);
     std::variant<uint64_t, Exception> MemoryStore(uint64_t addr, uint64_t size, uint64_t value);
 
+    void EnableDebugging(bool t) { EnableDebug = t; }
+
     uint64_t csrRead(uint64_t csr);
     void csrWrite(uint64_t csr, uint64_t value);
 
@@ -368,4 +370,5 @@ public:
     uint64_t ProgramCounter; // Program Counter
     uint64_t CSRegisters[4069]; // Control and Status Registers
     Mode CurrentMode = Mode::Machine;
+    bool EnableDebug = false;
 };

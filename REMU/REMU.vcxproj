@@ -30,6 +30,7 @@
     <ClCompile Include="Plic.cpp" />
     <ClCompile Include="RAM.cpp" />
     <ClCompile Include="Trap.cpp" />
+    <ClCompile Include="Uart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bus.h" />
@@ -41,6 +42,7 @@
     <ClInclude Include="Plic.h" />
     <ClInclude Include="RAM.h" />
     <ClInclude Include="Trap.h" />
+    <ClInclude Include="Uart.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

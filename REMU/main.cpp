@@ -35,8 +35,10 @@
 #include "Machine.h"
 
 int main(int argc, char *argv[]) {
+    bool debug = false; // argv[2]
     std::shared_ptr<REMU::Machine> mac = std::make_shared<REMU::Machine>(1500);
-    mac->read_file("fib.bin"); // argv[1]
+    mac->read_file("helloworld.bin"); // argv[1]
+    mac->ReturnCPU()->EnableDebugging(false);
 
     while (mac->Loop()) {
         mac->ReturnCPU()->DumpRegisters();

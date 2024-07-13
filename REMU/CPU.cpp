@@ -17,7 +17,9 @@ std::variant<uint64_t, Exception> CPU::Fetch() {
 }
 
 void CPU::debug(std::string s) {
-    std::cout << s;
+    if (EnableDebug) {
+        std::cout << "[REMU] INFO: " << s;
+    }
 }
 
 bool CPU::Loop() {
@@ -83,11 +85,13 @@ void CPU::DumpRegisters() {
         /*printf("%4s| x%02d: %#-8.2lx\n", abi[i+24], i+24, Registers[i+24]);*/
     /*}*/
 
-    for (int i = 0; i < 8; i++) {
-        printf("   %4s: %#-13.2lx  ", abi[i], Registers[i]);
-        printf("   %2s: %#-13.2lx  ", abi[i + 8], Registers[i + 8]);
-        printf("   %2s: %#-13.2lx  ", abi[i + 16], Registers[i + 16]);
-        printf("   %3s: %#-13.2lx\n", abi[i + 24], Registers[i + 24]);
+    if (EnableDebug) {
+        for (int i = 0; i < 8; i++) {
+            printf("   %4s: %#-13.2lx  ", abi[i], Registers[i]);
+            printf("   %2s: %#-13.2lx  ", abi[i + 8], Registers[i + 8]);
+            printf("   %2s: %#-13.2lx  ", abi[i + 16], Registers[i + 16]);
+            printf("   %3s: %#-13.2lx\n", abi[i + 24], Registers[i + 24]);
+        }
     }
 }
 

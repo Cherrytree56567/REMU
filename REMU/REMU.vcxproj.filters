@@ -40,6 +40,9 @@
     <Filter Include="Source Files\CPU\Clint">
       <UniqueIdentifier>{f91a8479-2019-4a12-8741-8282e55f08cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\CPU\Uart">
+      <UniqueIdentifier>{14c28c46-3114-49d8-816c-e35219bbd4dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -75,6 +78,9 @@
     <ClCompile Include="Clint.cpp">
       <Filter>Source Files\CPU\Clint</Filter>
     </ClCompile>
+    <ClCompile Include="Uart.cpp">
+      <Filter>Source Files\CPU\Uart</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU.h">
@@ -103,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="Clint.h">
       <Filter>Source Files\CPU\Clint</Filter>
+    </ClInclude>
+    <ClInclude Include="Uart.h">
+      <Filter>Source Files\CPU\Uart</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
