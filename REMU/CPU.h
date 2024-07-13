@@ -34,7 +34,6 @@
 // ... hpm counter 4-31 (TODO)
 #define HPMCOUNTER31H 0xC9F URO 
 
-
 //Supervisor Trap Setup
 #define SSTATUS     0x100 // SRW Supervisor status register.
 #define SEDELEG     0x102 // SRW Supervisor exception delegation register.
@@ -268,6 +267,12 @@ enum Mode {
     Machine = 0b11
 };
 
+enum AccessType {
+    Instruction,
+    Load,
+    Store
+};
+
 class CPU {
 public:
     CPU(std::shared_ptr<Bus> BUS);
@@ -398,4 +403,7 @@ public:
     uint64_t CSRegisters[4069]; // Control and Status Registers
     Mode CurrentMode = Mode::Machine;
     bool EnableDebug = false;
+    uint64_t PAGE_SIZE = 4096;
+    bool enable_paging = true;
+    uint64_t page_table = 0;
 };
