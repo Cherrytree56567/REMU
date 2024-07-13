@@ -36,7 +36,7 @@
 
 int main(int argc, char *argv[]) {
     bool debug = false; // argv[2]
-    std::shared_ptr<REMU::Machine> mac = std::make_shared<REMU::Machine>("helloworld.bin", "helloworld.bin", 1500);
+    std::shared_ptr<REMUMAC::Machine> mac = std::make_shared<REMU::Machine>("helloworld.bin", "helloworld.bin", 1500);
     mac->ReturnCPU()->EnableDebugging(debug);
 
     while (mac->Loop()) {

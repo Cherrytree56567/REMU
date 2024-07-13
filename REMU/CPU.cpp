@@ -247,8 +247,22 @@ std::variant<uint64_t, Exception> CPU::Execute(uint32_t inst) {
         switch (funct3) {
         case ADDSUB:
             switch (funct7) {
-            case ADD: exec_ADD(inst); // RV32I Base
-            case SUB: exec_ADD(inst); // RV32I Base
+            case IM: 
+                switch ((inst >> 25) & ((1 << 2) - 1)) {
+                case ITYPE: exec_ADD(inst); break; // RV32I Base
+                case MTYPE: 
+                    switch (funct3) {
+                    case MUL: exec_MUL(inst); break; // RV32M Standard
+                    case MULH: exec_MULH(inst); break; // RV32M Standard
+                    case MULHSU: exec_MULHSU(inst); break; // RV32M Standard
+                    case MULHU: exec_MULHU(inst); break; // RV32M Standard
+                    case DIV: exec_DIV(inst); break; // RV32M Standard
+                    case DIVU: exec_DIVU(inst); break; // RV32M Standard
+                    case REM: exec_REM(inst); break; // RV32M Standard
+                    case REMU: exec_REMU(inst); break; // RV32M Standard
+                    } break;
+                } break;
+            case SUB: exec_ADD(inst); break; // RV32I Base
             default:;
             } break;
         case SLL:  exec_SLL(inst); break; // RV32I Base

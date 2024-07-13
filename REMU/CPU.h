@@ -168,7 +168,17 @@
 
 #define R_TYPE  0x33
     #define ADDSUB  0x0
-        #define ADD     0x00
+        #define IM      0x00
+            #define ITYPE 0b00
+            #define MTYPE 0x01
+                #define MUL    0b000
+                #define MULH   0b001
+                #define MULHSU 0b010
+                #define MULHU  0b011
+                #define DIV    0b100
+                #define DIVU   0b101
+                #define REM    0b110
+                #define REMU   0b111
         #define SUB     0x20
     #define SLL     0x1
     #define SLT     0x2
@@ -368,6 +378,14 @@ public:
     void exec_CSRRCI(uint32_t inst);
     void exec_SFENCE_VMA(uint32_t inst);
     void exec_SRET(uint32_t inst);
+    void exec_MUL(uint32_t inst);
+    void exec_MULH(uint32_t inst);
+    void exec_MULHSU(uint32_t inst);
+    void exec_MULHU(uint32_t inst);
+    void exec_DIV(uint32_t inst);
+    void exec_DIVU(uint32_t inst);
+    void exec_REM(uint32_t inst);
+    void exec_REMU(uint32_t inst);
     void exec_MRET(uint32_t inst);
 
     void debug(std::string s);

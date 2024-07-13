@@ -2,7 +2,7 @@
 #include "CPU.h"
 #include "RAM.h"
 
-namespace REMU {
+namespace REMUMAC {
 	class Machine {
 	public:
 		Machine(std::string filename, std::string diskname, int RamSize);

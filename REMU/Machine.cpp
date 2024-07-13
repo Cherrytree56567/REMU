@@ -1,6 +1,6 @@
 #include "Machine.h"
 
-namespace REMU {
+namespace REMUMAC {
     Machine::Machine(std::string filename, std::string diskname, int RamSize) {
         std::ifstream file(diskname, std::ios::binary | std::ios::ate);
         if (!file) {

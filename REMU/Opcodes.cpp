@@ -548,3 +548,45 @@ void CPU::exec_MRET(uint32_t inst) {
     csrWrite(MSTATUS, (csrRead(MSTATUS) & !(0b11 << 11)));
     debug("mret\n");
 }
+void CPU::exec_MUL(uint32_t inst) {
+    Registers[rd(inst)] = Registers[rs1(inst)] * Registers[rs2(inst)];
+    debug("mul\n");
+}
+void CPU::exec_MULH(uint32_t inst) {
+    // TODO
+    debug("mulh\n");
+}
+void CPU::exec_MULHSU(uint32_t inst) {
+    // TODO
+    debug("mulhsu\n");
+}
+void CPU::exec_MULHU(uint32_t inst) {
+    // TODO
+    debug("mulhu\n");
+}
+void CPU::exec_DIV(uint32_t inst) {
+    // TODO
+    debug("div\n");
+}
+void CPU::exec_DIVU(uint32_t inst) {
+    switch (Registers[rs2(inst)]) {
+    case 0: {
+        // TODO: Set DZ (Divide by Zero) in the FCSR csr flag to 1.
+        Registers[rd(inst)] = 0xffffffffffffffff;
+    } break;
+    default: {
+        uint64_t dividend = Registers[rs1(inst)];
+        uint64_t divisor = Registers[rs2(inst)];
+        Registers[rd(inst)] = dividend / divisor;
+    } break;
+    };
+    debug("divu\n");
+}
+void CPU::exec_REM(uint32_t inst) {
+    // TODO
+    debug("rem\n");
+}
+void CPU::exec_REMU(uint32_t inst) {
+    // TODO
+    debug("remu\n");
+}
