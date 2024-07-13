@@ -75,6 +75,13 @@
 #define MTVAL       0x343 // MRW Machine bad address or instruction.
 #define MIP         0x344 // MRW Machine interrupt pending.
 
+#define MIP_SSIP   1 << 1 // MIP Fields
+#define MIP_MSIP   1 << 3 // MIP Fields
+#define MIP_STIP   1 << 5 // MIP Fields
+#define MIP_MTIP   1 << 7 // MIP Fields
+#define MIP_SEIP   1 << 9 // MIP Fields
+#define MIP_MEIP  1 << 11 // MIP Fields
+
 //Machine Memory Protection
 #define PMPCFG0     0x3A0 // MRW Physical memory protection configuration.
 #define PMPCFG1     0x3A1 // MRW Physical memory protection configuration, RV32 only.
@@ -266,6 +273,8 @@ public:
     std::variant<uint64_t, Exception> Fetch();
     std::variant<uint64_t, Exception> Execute(uint32_t inst);
     void DumpRegisters();
+
+    Interrupt check_pending_interrupt();
 
     void adcp(std::any cpp);
 

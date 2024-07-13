@@ -19,11 +19,26 @@ enum class Exception : uint64_t {
     StoreAMOPageFault = 15,
 };
 
+
+enum Interrupt {
+    UserSoftwareInterrupt,
+    SupervisorSoftwareInterrupt,
+    MachineSoftwareInterrupt,
+    UserTimerInterrupt,
+    SupervisorTimerInterrupt,
+    MachineTimerInterrupt,
+    UserExternalInterrupt,
+    SupervisorExternalInterrupt,
+    MachineExternalInterrupt, 
+    None
+};
+
 class Trap {
 public:
     virtual uint64_t exception_code() const = 0;
+    virtual void take_trap(std::any an);
 
-    void take_trap(std::any an) const;
+    void take_trap_helper(std::any an, bool is_interrupt) const;
 };
 
 class ExceptionTrap : public Trap {
@@ -38,4 +53,16 @@ public:
 
 private:
     Exception exception;
+};
+
+class InterruptTrap : public Trap {
+public:
+    InterruptTrap(Interrupt ex) : interrupt(ex) {}
+
+    virtual uint64_t exception_code() const override;
+
+    virtual void take_trap(std::any cpu) override;
+
+private:
+    Interrupt interrupt;
 };

@@ -6,10 +6,78 @@ CPU::CPU(std::shared_ptr<Bus> BUS) {
     ProgramCounter = MEMORY_BASE;
     bus = BUS;
     Memory = bus->GetRam();
+    for (auto& csra : CSRegisters) {
+        csra = 0;
+    }
 }
 
 void CPU::adcp(std::any cpp) {
     cp = cpp;
+}
+
+Interrupt CPU::check_pending_interrupt() {
+    switch (CurrentMode) {
+        case Mode::Machine: {
+            if ((csrRead(MSTATUS) >> 3) & (1 == 0)) {
+                return None;
+            }
+        }; break;
+        case Mode::Supervisor: {
+            if ((csrRead(SSTATUS) >> 1) & (1 == 0)) {
+                return None;
+            }
+        }; break;
+        default: break;
+    }
+
+    uint32_t irq;
+
+    if (bus->GetUart()->is_interrupting()) {
+        irq = UART_IRQ;
+    } else {
+        irq = 0;
+    }
+
+    if (irq != 0) {
+        if (std::holds_alternative<Exception>(bus->Store(PLIC_SCLAIM, 32, irq))) {
+            std::cout << "Failed to write an IRQ to the PLIC_SCLAIM\n";
+        }
+        csrWrite(MIP, csrRead(MIP) | MIP_SEIP);
+    }
+
+    uint32_t pending = csrRead(MIE) & csrRead(MIP);
+
+    if ((pending & MIP_MEIP) != 0) {
+        csrWrite(MIP, csrRead(MIP) & !MIP_MEIP);
+        return Interrupt::MachineExternalInterrupt;
+    }
+
+    if ((pending & MIP_MSIP) != 0) {
+        csrWrite(MIP, csrRead(MIP) & !MIP_MSIP);
+        return Interrupt::MachineSoftwareInterrupt;
+    }
+
+    if ((pending & MIP_MTIP) != 0) {
+        csrWrite(MIP, csrRead(MIP) & !MIP_MTIP);
+        return Interrupt::MachineTimerInterrupt;
+    }
+
+    if ((pending & MIP_SEIP) != 0) {
+        csrWrite(MIP, csrRead(MIP) & !MIP_SEIP);
+        return Interrupt::SupervisorExternalInterrupt;
+    }
+
+    if ((pending & MIP_SSIP) != 0) {
+        csrWrite(MIP, csrRead(MIP) & !MIP_SSIP);
+        return Interrupt::SupervisorSoftwareInterrupt;
+    }
+
+    if ((pending & MIP_STIP) != 0) {
+        csrWrite(MIP, csrRead(MIP) & !MIP_STIP);
+       return Interrupt::SupervisorTimerInterrupt;
+    }
+    
+    return None;
 }
 
 std::variant<uint64_t, Exception> CPU::Fetch() {
@@ -50,6 +118,12 @@ bool CPU::Loop() {
         if (ext.is_fatal(std::get<Exception>(resulta))) {
             return false;
         }
+    }
+
+    Interrupt sads = check_pending_interrupt();
+    if (sads != Interrupt::None) {
+        InterruptTrap sssss(sads);
+        sssss.take_trap(std::any_cast<std::shared_ptr<CPU>>(cp));
     }
 
     if (ProgramCounter == 0)

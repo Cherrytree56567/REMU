@@ -7,6 +7,7 @@
 #define UART_LSR UART_BASE + 5
 #define UART_LSR_RX 1
 #define UART_LSR_TX 1 << 5
+#define UART_IRQ 10
 #include <cstdint>
 #include <variant>
 #include <array>
@@ -26,6 +27,9 @@ public:
 
     std::variant<uint64_t, Exception> load(uint64_t addr, uint64_t size) override;
     std::variant<uint64_t, Exception> store(uint64_t addr, uint64_t size, uint64_t value) override;
+    bool is_interrupting() {
+        return interrupting->exchange(false, std::memory_order_acquire);
+    }
 private:
     uint64_t load8(uint64_t addr);
     void store8(uint64_t addr, uint64_t value);

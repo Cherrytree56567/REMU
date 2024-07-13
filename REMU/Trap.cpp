@@ -14,16 +14,30 @@ bool ExceptionTrap::is_fatal(Exception ex) {
     }
 }
 
-void Trap::take_trap(std::any an) const {
+void Trap::take_trap(std::any cpu) {
+    take_trap_helper(cpu, false);
+}
+
+void Trap::take_trap_helper(std::any an, bool is_interrupt) const {
     std::shared_ptr<CPU> cpu = std::any_cast<std::shared_ptr<CPU>>(an);
     uint64_t exception_pc = cpu->ProgramCounter - 4;
     Mode previous_mode = cpu->CurrentMode;
 
     uint64_t cause = exception_code();
+    if (is_interrupt) {
+        cause = (1 << 63) | cause;
+    }
     if ((previous_mode <= Mode::Supervisor) && (cpu->csrRead(MEDELEG) >> ((uint32_t)cause % 32)) & 1 != 0) {
         cpu->CurrentMode = Mode::Supervisor;
 
-        cpu->ProgramCounter = cpu->csrRead(STVEC) & !1;
+        if (is_interrupt) {
+            uint64_t stvec = cpu->csrRead(STVEC);
+            uint64_t vector = (stvec & 1) ? (4 * cause) : 0;
+            cpu->ProgramCounter = (stvec & ~1) + vector;
+        }
+        else {
+            cpu->ProgramCounter = cpu->csrRead(STVEC) & ~1;
+        }
 
         cpu->csrWrite(SEPC, (exception_pc & !1));
 
@@ -33,8 +47,7 @@ void Trap::take_trap(std::any an) const {
 
         if (((cpu->csrRead(SSTATUS) >> 1) & 1) == 1) {
             cpu->csrWrite(SSTATUS, (cpu->csrRead(SSTATUS) | (1 << 5)));
-        }
-        else {
+        } else {
             cpu->csrWrite(SSTATUS, (cpu->csrRead(SSTATUS) & !(1 << 5)));
         }
 
@@ -48,7 +61,14 @@ void Trap::take_trap(std::any an) const {
     else {
         cpu->CurrentMode = Mode::Machine;
 
-        cpu->ProgramCounter = cpu->csrRead(MTVEC) & !1;
+        if (is_interrupt) {
+            uint64_t mtvec = cpu->csrRead(MTVEC);
+            uint64_t vector = (mtvec & 1) ? (4 * cause) : 0;
+            cpu->ProgramCounter = (mtvec & ~1) + vector;
+        }
+        else {
+            cpu->ProgramCounter = cpu->csrRead(MTVEC) & ~1;
+        }
 
         cpu->csrWrite(MEPC, exception_pc & !1);
 
@@ -67,4 +87,22 @@ void Trap::take_trap(std::any an) const {
 
         cpu->csrWrite(MSTATUS, (cpu->csrRead(MSTATUS) & !(0b11 << 11)));
     }
+}
+
+uint64_t InterruptTrap::exception_code() const {
+    switch (interrupt) {
+    case Interrupt::UserSoftwareInterrupt: return 0; break;
+    case Interrupt::SupervisorSoftwareInterrupt: return 1; break;
+    case Interrupt::MachineSoftwareInterrupt: return 3; break;
+    case Interrupt::UserTimerInterrupt: return 4; break;
+    case Interrupt::SupervisorTimerInterrupt: return 5; break;
+    case Interrupt::MachineTimerInterrupt: return 7; break;
+    case Interrupt::UserExternalInterrupt: return 8; break;
+    case Interrupt::SupervisorExternalInterrupt: return 9; break;
+    case Interrupt::MachineExternalInterrupt: return 11; break;
+    }
+}
+
+void InterruptTrap::take_trap(std::any cpu) {
+    take_trap_helper(cpu, true);
 }
