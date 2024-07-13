@@ -9,60 +9,18 @@
 #include <cstdint>
 #include <variant>
 #include "Trap.h"
-
-class Device {
-public:
-    virtual std::variant<uint64_t, Exception> load(uint64_t addr, uint64_t size) = 0;
-    virtual std::variant<uint64_t, Exception> store(uint64_t addr, uint64_t size, uint64_t value) = 0;
-};
+#include "Device.h"
 
 class Plic : public Device {
 public:
-    Plic() {
-        pending = 0;
-        senable = 0;
-        spriority = 0;
-        sclaim = 0;
-    }
+    Plic() : pending(0), senable(0), spriority(0), sclaim(0) { }
 
-    std::variant<uint64_t, Exception> load(uint64_t addr, uint64_t size) override {
-        if (size == 32) {
-            return load32(addr);
-        }
-        else {
-            return Exception::LoadAccessFault;
-        }
-    }
-
-    std::variant<uint64_t, Exception> store(uint64_t addr, uint64_t size, uint64_t value) override {
-        if (size == 32) {
-            store32(addr, value);
-        }
-        else {
-            return Exception::StoreAMOAccessFault;
-        }
-    }
-
-    uint64_t load32(uint64_t addr) {
-        switch (addr) {
-        case PLIC_PENDING: return pending; break;
-        case PLIC_SENABLE: return senable; break;
-        case PLIC_SPRIORITY: return spriority; break;
-        case PLIC_SCLAIM: return sclaim; break;
-        default: return 0; break;
-        }
-    }
-
-    void store32(uint64_t addr, uint64_t value) {
-        switch (addr) {
-        case PLIC_PENDING: pending = value; break;
-        case PLIC_SENABLE: senable = value; break;
-        case PLIC_SPRIORITY:spriority = value; break;
-        case PLIC_SCLAIM: sclaim = value; break;
-        default: break;
-        }
-    }
+    std::variant<uint64_t, Exception> load(uint64_t addr, uint64_t size) override;
+    std::variant<uint64_t, Exception> store(uint64_t addr, uint64_t size, uint64_t value) override;
 private:
+    uint64_t load32(uint64_t addr);
+    void store32(uint64_t addr, uint64_t value);
+
     uint64_t pending;
     uint64_t senable;
     uint64_t spriority;

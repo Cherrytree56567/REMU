@@ -1,6 +1,6 @@
 #include "RAM.h"
 
-std::variant<uint64_t, Exception> RAM::Load(uint64_t addr, uint64_t size) {
+std::variant<uint64_t, Exception> RAM::load(uint64_t addr, uint64_t size) {
     switch (size) {
     case 8:  return MemoryLoad8(addr);  break;
     case 16: return MemoryLoad16(addr); break;
@@ -11,7 +11,7 @@ std::variant<uint64_t, Exception> RAM::Load(uint64_t addr, uint64_t size) {
     return Exception::LoadAccessFault;
 }
 
-std::variant<uint64_t, Exception> RAM::Store(uint64_t addr, uint64_t size, uint64_t value) {
+std::variant<uint64_t, Exception> RAM::store(uint64_t addr, uint64_t size, uint64_t value) {
     switch (size) {
     case 8:  MemoryStore8(addr, value);  break;
     case 16: MemoryStore16(addr, value); break;

@@ -32,10 +32,10 @@
 * 
 */
 #include <iostream>
-#include "MachineTest.h"
+#include "Machine.h"
 
 int main(int argc, char *argv[]) {
-    std::shared_ptr<MachineTest> mac = std::make_shared<MachineTest>(128);
+    std::shared_ptr<REMU::Machine> mac = std::make_shared<REMU::Machine>(1500);
     mac->read_file("fib.bin"); // argv[1]
 
     while (mac->Loop()) {

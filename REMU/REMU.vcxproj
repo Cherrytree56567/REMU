@@ -20,24 +20,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bus.cpp" />
+    <ClCompile Include="Clint.cpp" />
     <ClCompile Include="CPU.cpp" />
-    <ClCompile Include="CPUTest.cpp" />
+    <ClCompile Include="Device.cpp" />
     <ClCompile Include="Machine.cpp" />
-    <ClCompile Include="MachineTest.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OpcodeHelpers.cpp" />
     <ClCompile Include="Opcodes.cpp" />
-    <ClCompile Include="OpcodesTest.cpp" />
     <ClCompile Include="Plic.cpp" />
     <ClCompile Include="RAM.cpp" />
     <ClCompile Include="Trap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bus.h" />
+    <ClInclude Include="Clint.h" />
     <ClInclude Include="CPU.h" />
-    <ClInclude Include="CPUTest.h" />
+    <ClInclude Include="Device.h" />
     <ClInclude Include="Machine.h" />
-    <ClInclude Include="MachineTest.h" />
     <ClInclude Include="OpcodeHelpers.h" />
     <ClInclude Include="Plic.h" />
     <ClInclude Include="RAM.h" />

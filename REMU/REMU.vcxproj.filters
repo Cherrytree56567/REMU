@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Source Files\CPU">
       <UniqueIdentifier>{fefa511c-21a7-4374-8c59-0b58e50357fa}</UniqueIdentifier>
     </Filter>
@@ -25,18 +21,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Machine\Machines">
-      <UniqueIdentifier>{950096e2-e2a2-4355-ab0d-ba27deca0348}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\CPU\CPUs">
-      <UniqueIdentifier>{4c1c5854-4317-421f-ae15-c87421c9ec24}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\CPU\CPUs\Test">
-      <UniqueIdentifier>{1d225e37-c90c-48e7-82c0-2748790966cb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Machine\Machines\Test64">
-      <UniqueIdentifier>{28803833-464d-4861-a478-52e13b4f1d0a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\CPU\Trap">
       <UniqueIdentifier>{079d3456-3083-4b8a-8dcb-20994950ad85}</UniqueIdentifier>
     </Filter>
@@ -45,6 +29,16 @@
     </Filter>
     <Filter Include="Source Files\CPU\Plic">
       <UniqueIdentifier>{82946274-7769-4e06-864a-9d9e9994b0d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CPU\Device">
+      <UniqueIdentifier>{d495d1d6-2229-4262-946e-bf8ec06cd7a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\CPU\Clint">
+      <UniqueIdentifier>{f91a8479-2019-4a12-8741-8282e55f08cf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -66,15 +60,6 @@
     <ClCompile Include="Machine.cpp">
       <Filter>Source Files\Machine</Filter>
     </ClCompile>
-    <ClCompile Include="CPUTest.cpp">
-      <Filter>Source Files\CPU\CPUs\Test</Filter>
-    </ClCompile>
-    <ClCompile Include="OpcodesTest.cpp">
-      <Filter>Source Files\CPU\CPUs\Test</Filter>
-    </ClCompile>
-    <ClCompile Include="MachineTest.cpp">
-      <Filter>Source Files\Machine\Machines\Test64</Filter>
-    </ClCompile>
     <ClCompile Include="Trap.cpp">
       <Filter>Source Files\CPU\Trap</Filter>
     </ClCompile>
@@ -83,6 +68,12 @@
     </ClCompile>
     <ClCompile Include="Plic.cpp">
       <Filter>Source Files\CPU\Plic</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>Source Files\CPU\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Clint.cpp">
+      <Filter>Source Files\CPU\Clint</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,12 +89,6 @@
     <ClInclude Include="Machine.h">
       <Filter>Source Files\Machine</Filter>
     </ClInclude>
-    <ClInclude Include="CPUTest.h">
-      <Filter>Source Files\CPU\CPUs\Test</Filter>
-    </ClInclude>
-    <ClInclude Include="MachineTest.h">
-      <Filter>Source Files\Machine\Machines\Test64</Filter>
-    </ClInclude>
     <ClInclude Include="Trap.h">
       <Filter>Source Files\CPU\Trap</Filter>
     </ClInclude>
@@ -112,6 +97,12 @@
     </ClInclude>
     <ClInclude Include="Plic.h">
       <Filter>Source Files\CPU\Plic</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Source Files\CPU\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Clint.h">
+      <Filter>Source Files\CPU\Clint</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
