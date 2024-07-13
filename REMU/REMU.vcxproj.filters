@@ -43,6 +43,9 @@
     <Filter Include="Source Files\CPU\Uart">
       <UniqueIdentifier>{14c28c46-3114-49d8-816c-e35219bbd4dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\CPU\Virtio">
+      <UniqueIdentifier>{0c2b81d1-25cd-42ab-aecd-cd3da28bc54e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -81,6 +84,9 @@
     <ClCompile Include="Uart.cpp">
       <Filter>Source Files\CPU\Uart</Filter>
     </ClCompile>
+    <ClCompile Include="Virtio.cpp">
+      <Filter>Source Files\CPU\Virtio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU.h">
@@ -112,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="Uart.h">
       <Filter>Source Files\CPU\Uart</Filter>
+    </ClInclude>
+    <ClInclude Include="Virtio.h">
+      <Filter>Source Files\CPU\Virtio</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

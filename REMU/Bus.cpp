@@ -7,6 +7,8 @@ std::variant<uint64_t, Exception> Bus::Load(uint64_t addr, uint64_t size) {
         return plic->load(addr, size);
     } else if ((UART_BASE <= addr) && (addr < (UART_BASE + UART_SIZE))) {
         return uart->load(addr, size);
+    } else if ((VIRTIO_BASE <= addr) && (addr < (VIRTIO_BASE + VIRTIO_SIZE))) {
+        return virtio->load(addr, size);
     } else if (MEMORY_BASE <= addr) {
         return ram->load(addr, size);
     }
@@ -20,6 +22,8 @@ std::variant<uint64_t, Exception> Bus::Store(uint64_t addr, uint64_t size, uint6
         return plic->store(addr, size, value);
     } else if ((UART_BASE <= addr) && (addr < (UART_BASE + UART_SIZE))) {
         return uart->store(addr, size, value);
+    } else if ((VIRTIO_BASE <= addr) && (addr < (VIRTIO_BASE + VIRTIO_SIZE))) {
+        return virtio->store(addr, size, value);
     } else if (MEMORY_BASE <= addr) {
         return ram->store(addr, size, value);
     }

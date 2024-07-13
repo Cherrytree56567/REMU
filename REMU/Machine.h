@@ -5,7 +5,7 @@
 namespace REMU {
 	class Machine {
 	public:
-		Machine(int RamSize);
+		Machine(std::string filename, std::string diskname, int RamSize);
 
 		bool Loop();
 		std::shared_ptr<CPU> ReturnCPU() { return cpu; }

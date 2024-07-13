@@ -29,15 +29,14 @@
 * https://github.com/d0iasm/rvemu-for-book
 * https://five-embeddev.com/riscv-user-isa-manual/Priv-v1.12/instr-table.html
 * https://msyksphinz-self.github.io/riscv-isadoc/html/index.html
-* 
+* https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/virtio_disk.c
 */
 #include <iostream>
 #include "Machine.h"
 
 int main(int argc, char *argv[]) {
     bool debug = false; // argv[2]
-    std::shared_ptr<REMU::Machine> mac = std::make_shared<REMU::Machine>(1500);
-    mac->read_file("helloworld.bin"); // argv[1]
+    std::shared_ptr<REMU::Machine> mac = std::make_shared<REMU::Machine>("helloworld.bin", "helloworld.bin", 1500);
     mac->ReturnCPU()->EnableDebugging(debug);
 
     while (mac->Loop()) {
