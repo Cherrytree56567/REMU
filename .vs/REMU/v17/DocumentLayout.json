@@ -5,6 +5,22 @@
     {
       "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\Bus.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\Bus.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\Bus.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\Bus.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\Plic.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\Plic.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|D:\\REMU\\REMU\\CPU.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0E9C028C-6D52-4575-9853-08CDEA205D21}|REMU\\REMU.vcxproj|solutionrelative:REMU\\CPU.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,8 +30,60 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 4,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CPU.cpp",
+              "DocumentMoniker": "D:\\REMU\\REMU\\CPU.cpp",
+              "RelativeDocumentMoniker": "REMU\\CPU.cpp",
+              "ToolTip": "D:\\REMU\\REMU\\CPU.cpp",
+              "RelativeToolTip": "REMU\\CPU.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-07-13T00:26:06.696Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Bus.cpp",
+              "DocumentMoniker": "D:\\REMU\\REMU\\Bus.cpp",
+              "RelativeDocumentMoniker": "REMU\\Bus.cpp",
+              "ToolTip": "D:\\REMU\\REMU\\Bus.cpp",
+              "RelativeToolTip": "REMU\\Bus.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-07-13T00:18:59.028Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Bus.h",
+              "DocumentMoniker": "D:\\REMU\\REMU\\Bus.h",
+              "RelativeDocumentMoniker": "REMU\\Bus.h",
+              "ToolTip": "D:\\REMU\\REMU\\Bus.h",
+              "RelativeToolTip": "REMU\\Bus.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-07-13T00:17:43.578Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Plic.h",
+              "DocumentMoniker": "D:\\REMU\\REMU\\Plic.h",
+              "RelativeDocumentMoniker": "REMU\\Plic.h",
+              "ToolTip": "D:\\REMU\\REMU\\Plic.h",
+              "RelativeToolTip": "REMU\\Plic.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-07-13T00:01:18.688Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,

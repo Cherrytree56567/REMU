@@ -28,6 +28,7 @@
     <ClCompile Include="OpcodeHelpers.cpp" />
     <ClCompile Include="Opcodes.cpp" />
     <ClCompile Include="OpcodesTest.cpp" />
+    <ClCompile Include="Plic.cpp" />
     <ClCompile Include="RAM.cpp" />
     <ClCompile Include="Trap.cpp" />
   </ItemGroup>
@@ -38,6 +39,7 @@
     <ClInclude Include="Machine.h" />
     <ClInclude Include="MachineTest.h" />
     <ClInclude Include="OpcodeHelpers.h" />
+    <ClInclude Include="Plic.h" />
     <ClInclude Include="RAM.h" />
     <ClInclude Include="Trap.h" />
   </ItemGroup>

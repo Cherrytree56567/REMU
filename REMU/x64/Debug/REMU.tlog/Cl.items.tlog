@@ -7,5 +7,6 @@ D:\REMU\REMU\main.cpp;D:\REMU\REMU\x64\Debug\main.obj
 D:\REMU\REMU\OpcodeHelpers.cpp;D:\REMU\REMU\x64\Debug\OpcodeHelpers.obj
 D:\REMU\REMU\Opcodes.cpp;D:\REMU\REMU\x64\Debug\Opcodes.obj
 D:\REMU\REMU\OpcodesTest.cpp;D:\REMU\REMU\x64\Debug\OpcodesTest.obj
+D:\REMU\REMU\Plic.cpp;D:\REMU\REMU\x64\Debug\Plic.obj
 D:\REMU\REMU\RAM.cpp;D:\REMU\REMU\x64\Debug\RAM.obj
 D:\REMU\REMU\Trap.cpp;D:\REMU\REMU\x64\Debug\Trap.obj

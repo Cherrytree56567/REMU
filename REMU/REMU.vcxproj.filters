@@ -43,6 +43,9 @@
     <Filter Include="Source Files\CPU\Bus">
       <UniqueIdentifier>{4aadf861-2465-4c2e-801b-2beca0ea4f5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\CPU\Plic">
+      <UniqueIdentifier>{82946274-7769-4e06-864a-9d9e9994b0d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -78,6 +81,9 @@
     <ClCompile Include="Bus.cpp">
       <Filter>Source Files\CPU\Bus</Filter>
     </ClCompile>
+    <ClCompile Include="Plic.cpp">
+      <Filter>Source Files\CPU\Plic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU.h">
@@ -103,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="Bus.h">
       <Filter>Source Files\CPU\Bus</Filter>
+    </ClInclude>
+    <ClInclude Include="Plic.h">
+      <Filter>Source Files\CPU\Plic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
