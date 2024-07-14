@@ -1,4 +1,5 @@
 #include "CPU.h"
+#include <boost/multiprecision/cpp_int.hpp>
 
 void CPU::exec_LUI(uint32_t inst) {
     // LUI places upper 20 bits of U-immediate value to rd
@@ -14,21 +15,42 @@ void CPU::exec_AUIPC(uint32_t inst) {
     debug("auipc\n");
 }
 
+uint32_t wrapping_add(uint32_t a, uint64_t b) {
+    // Calculate the sum
+    uint64_t sum = static_cast<uint64_t>(a) + b;
+
+    // Wrap around if the sum exceeds UINT32_MAX
+    return static_cast<uint32_t>(sum & 0xfffff10e);
+}
+
 void CPU::exec_JAL(uint32_t inst) {
     uint64_t imm = imm_J(inst);
     Registers[rd(inst)] = ProgramCounter;
     /*debug("JAL-> rd:%ld, pc:%lx\n", rd(inst), ProgramCounter);*/
     ProgramCounter = ProgramCounter + (int64_t)imm - 4;
     debug("jal\n");
+    //std::cout << Registers[rd(inst)] << std::endl;
+   // std::cout << imm << std::endl;
+    //std::cout << ProgramCounter << std::endl;
+    //exit(199);
 }
 
 void CPU::exec_JALR(uint32_t inst) {
+    using namespace boost::multiprecision;
     uint64_t imm = imm_I(inst);
     uint64_t tmp = ProgramCounter;
-    ProgramCounter = (Registers[rs1(inst)] + (int64_t)imm) & 0xfffffffe;
     Registers[rd(inst)] = tmp;
+    if (((cpp_int)Registers[rs1(inst)] + (cpp_int)imm) > (cpp_int)18446744073709551615) {
+        cpp_int ssss = (((cpp_int)Registers[rs1(inst)] + (cpp_int)imm));
+        ssss = ssss % ((cpp_int)18446744073709551615 + 1);
+        ProgramCounter = ssss.convert_to<uint64_t>();
+    } else {
+        ProgramCounter = (Registers[rs1(inst)] + imm);
+    }
     /*debug("NEXT -> %#lx, imm:%#lx\n", ProgramCounter, imm);*/
     debug("jalr\n");
+    std::cout << Registers[rs1(inst)] << std::endl << imm << std::endl << ProgramCounter << std::endl << tmp << std::endl;
+    exit(99);
 }
 
 void CPU::exec_BEQ(uint32_t inst) {

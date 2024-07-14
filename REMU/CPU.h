@@ -254,6 +254,9 @@
 #include <variant>
 #include <iomanip>
 #include <fstream>
+#include <cstdio>
+#include <cinttypes>
+#include <chrono>
 #include <string>
 #include <map>
 #include "RAM.h"
@@ -407,6 +410,8 @@ public:
     Mode CurrentMode = Mode::Machine;
     bool EnableDebug = false;
     uint64_t PAGE_SIZE = 4096;
-    bool enable_paging = false;
+    bool enable_paging = true;
     uint64_t page_table = 0;
+    uint64_t cycle_counter;
+    std::chrono::steady_clock::time_point start_time;
 };

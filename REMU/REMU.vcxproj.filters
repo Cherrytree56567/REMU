@@ -123,4 +123,7 @@
       <Filter>Source Files\CPU\Virtio</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

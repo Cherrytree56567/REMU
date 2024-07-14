@@ -315,11 +315,27 @@ void CPU::csrWrite(uint64_t csr, uint64_t value) {
 }
 
 std::variant<uint64_t, Exception> CPU::Execute(uint32_t inst) {
+    using namespace std::chrono;
     int opcode = inst & 0x7f;           // opcode in bits 6..0
     int funct3 = (inst >> 12) & 0x7;    // funct3 in bits 14..12
     int funct7 = (inst >> 25) & 0x7f;   // funct7 in bits 31..25
 
     Registers[0] = 0;
+
+    cycle_counter += 1;
+
+    // Add your code for measuring elapsed time and calculating MHz
+    auto current_time = steady_clock::now();
+    double time_elapsed = duration_cast<duration<double>>(current_time - start_time).count();
+
+    if (time_elapsed > 1) {
+        std::cout << ":: " << cycle_counter << std::endl;
+        double mhz = (cycle_counter / time_elapsed) / 1e6;
+        fprintf(stdout, "Processor MHz: %.2f MHz\n", mhz);
+        fflush(stdout);
+        cycle_counter = 0;
+        start_time = current_time;
+    }
 
     switch (opcode) {
     case LUI:   exec_LUI(inst); break;  // RV32I Base

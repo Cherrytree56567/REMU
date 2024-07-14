@@ -36,11 +36,11 @@
 
 int main(int argc, char *argv[]) {
     bool debug = false; // argv[3]
-    std::shared_ptr<REMUMAC::Machine> mac = std::make_shared<REMUMAC::Machine>("xv6-kernel.bin", "xv6-fs.img", 128); // argv[1], argv[2]
+    std::shared_ptr<REMUMAC::Machine> mac = std::make_shared<REMUMAC::Machine>("xv6-kernel.bin", "xv6-fs.img", 1280); // argv[1], argv[2]
     mac->ReturnCPU()->EnableDebugging(debug);
 
     while (mac->Loop()) {
-        mac->ReturnCPU()->DumpRegisters();
+        //mac->ReturnCPU()->DumpRegisters();
     }
     return 0;
 }
