@@ -280,6 +280,9 @@ public:
     std::variant<uint64_t, Exception> MemoryLoad(uint64_t addr, uint64_t size);
     std::variant<uint64_t, Exception> MemoryStore(uint64_t addr, uint64_t size, uint64_t value);
 
+    void update_paging(size_t csr_addr);
+    std::variant<uint64_t, Exception> translate(uint64_t addr, AccessType access_type);
+
     void EnableDebugging(bool t) { EnableDebug = t; }
 
     uint64_t csrRead(uint64_t csr);
@@ -400,10 +403,10 @@ public:
     std::any cp;
     uint64_t Registers[32]; // 32 64-bit Registers
     uint64_t ProgramCounter; // Program Counter
-    uint64_t CSRegisters[4069]; // Control and Status Registers
+    uint64_t CSRegisters[4096]; // Control and Status Registers
     Mode CurrentMode = Mode::Machine;
     bool EnableDebug = false;
     uint64_t PAGE_SIZE = 4096;
-    bool enable_paging = true;
+    bool enable_paging = false;
     uint64_t page_table = 0;
 };

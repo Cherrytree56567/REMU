@@ -15,6 +15,114 @@ void CPU::adcp(std::any cpp) {
     cp = cpp;
 }
 
+void CPU::update_paging(size_t csr_addr) {
+    if (csr_addr != SATP) {
+        return;
+    }
+
+    page_table = (csrRead(SATP) & ((1 << 44) - 1)) * PAGE_SIZE;
+
+    auto mode = csrRead(SATP) >> 60;
+
+    if (mode == 8) {
+        enable_paging = true;
+    } else {
+        enable_paging = false;
+    }
+}
+
+std::variant<uint64_t, Exception> CPU::translate(uint64_t addr, AccessType access_type) {
+    if (!enable_paging) {
+        return addr;
+    }
+
+    int levels = 3;
+
+    uint64_t vpn[3] = {
+        (addr >> 12) & 0x1ff,
+        (addr >> 21) & 0x1ff,
+        (addr >> 30) & 0x1ff
+    };
+
+    uint64_t a = page_table;
+
+    int64_t i = levels - 1;
+
+    uint64_t pte;
+
+    while (true) {
+        auto po = bus->Load(a + vpn[i] * 8, 64);
+        if (std::holds_alternative<uint64_t>(po)) {
+            pte = std::get<uint64_t>(po);
+        }
+        else {
+            pte = 0;
+                std::cout << "Failed to bus load.\n";
+        }
+
+        uint64_t v = pte & 1;
+
+        uint64_t r = (pte >> 1) & 1;
+
+        uint64_t w = (pte >> 2) & 1;
+
+        uint64_t x = (pte >> 3) & 1;
+
+        if (v == 0 || (r == 0 && w == 1)) {
+            switch (access_type) {
+            case AccessType::Instruction: return Exception::InstructionPageFault; break;
+            case AccessType::Load: return Exception::LoadPageFault; break;
+            case AccessType::Store: return Exception::StoreAMOPageFault; break;
+            }
+        }
+
+        if (r == 1 || x == 1) {
+            break;
+        }
+
+        i -= 1;
+
+        uint64_t ppn = (pte >> 10) & 0x0fffffffffff;
+
+        a = ppn * PAGE_SIZE;
+
+        if (i < 0) {
+            switch (access_type) {
+            case AccessType::Instruction: return Exception::InstructionPageFault; break;
+            case AccessType::Load: return Exception::LoadPageFault; break;
+            case AccessType::Store: return Exception::StoreAMOPageFault; break;
+            }
+        }
+
+    }
+
+    uint64_t ppn[3] = {
+        (pte >> 10) & 0x1ff,
+        (pte >> 19) & 0x1ff,
+        (pte >> 28) & 0x03ffffff
+    };
+
+    uint64_t offset = addr & 0xfff;
+
+    switch (i) {
+    case 0: {
+        uint64_t ppn = (pte >> 10) & 0x0fffffffffff;
+        return (ppn << 12) | offset;
+    } break;
+    case 1: {
+        return (ppn[2] << 30) | (ppn[1] << 21) | (vpn[0] << 12) | offset;
+    } break;
+    case 2: {
+        return (ppn[2] << 30) | (vpn[1] << 21) | (vpn[0] << 12) | offset;
+    }
+    default: switch (access_type) {
+    case AccessType::Instruction: return Exception::InstructionPageFault; break;
+    case AccessType::Load: return Exception::LoadPageFault; break;
+    case AccessType::Store: return Exception::StoreAMOPageFault; break;
+    } break;
+    }
+}
+
 Interrupt CPU::check_pending_interrupt() {
     switch (CurrentMode) {
         case Mode::Machine: {
@@ -81,7 +189,16 @@ Interrupt CPU::check_pending_interrupt() {
 }
 
 std::variant<uint64_t, Exception> CPU::Fetch() {
-    return MemoryLoad(ProgramCounter, 32);
+    uint64_t p_pc;
+    auto pl = translate(ProgramCounter, AccessType::Instruction);
+    if (std::holds_alternative<uint64_t>(pl)) {
+        p_pc = std::get<uint64_t>(pl);
+    }
+    else {
+        p_pc = 0;
+        std::cout << "Failed to translate pc.\n";
+    }
+    return MemoryLoad(p_pc, 32);
 }
 
 void CPU::debug(std::string s) {
@@ -133,10 +250,28 @@ bool CPU::Loop() {
 }
 
 std::variant<uint64_t, Exception> CPU::MemoryLoad(uint64_t addr, uint64_t size) {
-    return bus->Load(addr, size);
+    uint64_t p_addr;
+    auto pl = translate(addr, AccessType::Load);
+    if (std::holds_alternative<uint64_t>(pl)) {
+        p_addr = std::get<uint64_t>(pl);
+    }
+    else {
+        p_addr = 0;
+        std::cout << "Failed to translate addr.\n";
+    }
+    return bus->Load(p_addr, size);
 }
 
 std::variant<uint64_t, Exception> CPU::MemoryStore(uint64_t addr, uint64_t size, uint64_t value) {
+    uint64_t p_addr;
+    auto pl = translate(addr, AccessType::Store);
+    if (std::holds_alternative<uint64_t>(pl)) {
+        p_addr = std::get<uint64_t>(pl);
+    }
+    else {
+        p_addr = 0;
+        std::cout << "Failed to translate addr.\n";
+    }
     return bus->Store(addr, size, value);
 }
 
