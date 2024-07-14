@@ -200,7 +200,7 @@ std::variant<uint64_t, Exception> CPU::Fetch() {
         p_pc = 0;
         std::cout << "Failed to translate pc.\n";
     }
-    return MemoryLoad(ProgramCounter, 32);
+    return MemoryLoad(p_pc, 32);
 }
 
 void CPU::debug(std::string s) {
@@ -261,7 +261,7 @@ std::variant<uint64_t, Exception> CPU::MemoryLoad(uint64_t addr, uint64_t size) 
         p_addr = 0;
         std::cout << "Failed to translate addr.\n";
     }
-    return bus->Load(addr, size);
+    return bus->Load(p_addr, size);
 }
 
 std::variant<uint64_t, Exception> CPU::MemoryStore(uint64_t addr, uint64_t size, uint64_t value) {
@@ -274,7 +274,7 @@ std::variant<uint64_t, Exception> CPU::MemoryStore(uint64_t addr, uint64_t size,
         p_addr = 0;
         std::cout << "Failed to translate addr.\n";
     }
-    return bus->Store(addr, size, value);
+    return bus->Store(p_addr, size, value);
 }
 
 void CPU::DumpRegisters() {
