@@ -42,5 +42,6 @@ private:
 	std::shared_ptr<Virtio> virtio;
 
 	size_t RamSize;
+	bool ss = false;
 };
 

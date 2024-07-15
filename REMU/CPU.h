@@ -276,12 +276,16 @@ enum AccessType {
     Store
 };
 
+extern "C" uint64_t add(uint64_t a, uint64_t b);
+
 class CPU {
 public:
     CPU(std::shared_ptr<Bus> BUS);
 
     std::variant<uint64_t, Exception> MemoryLoad(uint64_t addr, uint64_t size);
     std::variant<uint64_t, Exception> MemoryStore(uint64_t addr, uint64_t size, uint64_t value);
+
+    uint64_t HandleException(std::variant<uint64_t, Exception> s);
 
     void update_paging(size_t csr_addr);
     std::variant<uint64_t, Exception> translate(uint64_t addr, AccessType access_type);

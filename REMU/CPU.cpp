@@ -9,8 +9,12 @@ CPU::CPU(std::shared_ptr<Bus> BUS) {
     for (auto& csra : CSRegisters) {
         csra = 0;
     }
+    for (auto& regs : Registers) {
+        regs = 0;
+    }
     page_table = 0;
     enable_paging = false;
+    cycle_counter = 0;
 }
 
 void CPU::adcp(std::any cpp) {
@@ -205,7 +209,7 @@ std::variant<uint64_t, Exception> CPU::Fetch() {
 
 void CPU::debug(std::string s) {
     if (EnableDebug) {
-        std::cout << "[REMU] INFO: " << s;
+        std::cout << "[REMU] INFO: " << s << ", " << cycle_counter << ", " << ProgramCounter << std::endl;
     }
 }
 
@@ -306,6 +310,17 @@ void CPU::DumpRegisters() {
     }
 }
 
+uint64_t CPU::HandleException(std::variant<uint64_t, Exception> s) {
+    if (std::holds_alternative<uint64_t>(s)) {
+        return std::get<uint64_t>(s);
+    } else {
+        if (EnableDebug) {
+            std::cout << "Exception: " << (int)std::get<Exception>(s) << std::endl;
+        }
+        return 0;
+    }
+}
+
 uint64_t CPU::csrRead(uint64_t csr) {
     return (uint64_t)(uint32_t)CSRegisters[csr];
 }
@@ -322,12 +337,18 @@ std::variant<uint64_t, Exception> CPU::Execute(uint32_t inst) {
 
     Registers[0] = 0;
 
+    if ((Registers[15] != 0) && (cycle_counter > 400)) {
+        //exit(0);
+    }
+
     cycle_counter += 1;
 
     // Add your code for measuring elapsed time and calculating MHz
     auto current_time = steady_clock::now();
     double time_elapsed = duration_cast<duration<double>>(current_time - start_time).count();
-
+    if (cycle_counter > 500) {
+        exit(90);
+    }/*
     if (time_elapsed > 1) {
         std::cout << ":: " << cycle_counter << std::endl;
         double mhz = (cycle_counter / time_elapsed) / 1e6;
@@ -335,7 +356,7 @@ std::variant<uint64_t, Exception> CPU::Execute(uint32_t inst) {
         fflush(stdout);
         cycle_counter = 0;
         start_time = current_time;
-    }
+    }*/
 
     switch (opcode) {
     case LUI:   exec_LUI(inst); break;  // RV32I Base
