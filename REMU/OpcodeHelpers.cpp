@@ -15,18 +15,17 @@ uint64_t rs2(uint32_t inst) {
 
 uint64_t imm_I(uint32_t inst) {
     // imm[11:0] = inst[31:20]
-    return ((int64_t)(int32_t)(inst & 0xfff00000)) >> 20;
+    return static_cast<uint64_t>((static_cast<int64_t>(static_cast<int32_t>(inst)) >> 20));
 }
 
 uint64_t imm_S(uint32_t inst) {
     // imm[11:5] = inst[31:25], imm[4:0] = inst[11:7]
-    return ((int64_t)(int32_t)(inst & 0xfe000000) >> 20)
-        | ((inst >> 7) & 0x1f);
+    return static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(inst & 0xfe000000)) >> 20) | ((inst >> 7) & 0x1f);
 }
 
 uint64_t imm_B(uint32_t inst) {
     // imm[12|10:5|4:1|11] = inst[31|30:25|11:8|7]
-    return ((int64_t)(int32_t)(inst & 0x80000000) >> 19)
+    return static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(inst & 0x80000000)) >> 19)
         | ((inst & 0x80) << 4) // imm[11]
         | ((inst >> 20) & 0x7e0) // imm[10:5]
         | ((inst >> 7) & 0x1e); // imm[4:1]
@@ -48,10 +47,21 @@ uint64_t imm_J(uint32_t inst) {
 uint32_t shamt(uint32_t inst) {
     // shamt(shift amount) only required for immediate shift instructions
     // shamt[4:5] = imm[5:0]
-    return (uint32_t)(imm_I(inst) & 0x1f); // TODO: 0x1f / 0x3f ?
+    return static_cast<uint32_t>(imm_I(inst) & 0x3f);
 }
 
 uint64_t csr(uint32_t inst) {
     // csr[11:0] = inst[31:20]
     return ((inst & 0xfff00000) >> 20);
+}
+
+uint64_t wrapping_shr(uint64_t value, unsigned int shift) {
+    if (shift >= 64) {
+        return 0; // If shift is greater than or equal to the bit width, result is always 0
+    }
+    return (value >> shift) | (value << (64 - shift));
+}
+
+uint64_t wrapping_shl(uint64_t value, unsigned int shift) {
+    return (shift >= 64) ? 0 : ((value << shift) | (value >> (64 - shift)));
 }

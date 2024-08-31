@@ -257,6 +257,7 @@
 #include <cstdio>
 #include <cinttypes>
 #include <chrono>
+#include <format>
 #include <string>
 #include <map>
 #include "RAM.h"
@@ -403,7 +404,19 @@ public:
     void exec_REMU(uint32_t inst);
     void exec_MRET(uint32_t inst);
 
-    void debug(std::string s);
+    template<typename... Args>
+    void debug(const std::string& format_str, Args&&... args) {
+        if constexpr (sizeof...(args) > 0) {
+            std::string formatted_str = std::vformat(format_str, std::make_format_args(args...));
+            std::cout << "[REMU::CORE] Warning: " << formatted_str << std::endl;
+        }
+        else if (!format_str.empty()) {
+            std::cout << "[REMU::CORE] Warning: " << format_str << std::endl;
+        }
+        else {
+            std::cout << "[REMU::CORE] Warning: " << std::endl;
+        }
+    }
 
     std::shared_ptr<Bus> bus;
     std::shared_ptr<RAM> Memory;
@@ -418,4 +431,6 @@ public:
     uint64_t page_table = 0;
     uint64_t cycle_counter;
     std::chrono::steady_clock::time_point start_time;
+    std::vector<uint64_t> s;
+    uint64_t ss = 0;
 };

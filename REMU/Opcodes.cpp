@@ -3,15 +3,15 @@
 
 void CPU::exec_LUI(uint32_t inst) {
     // LUI places upper 20 bits of U-immediate value to rd
-    Registers[rd(inst)] = (uint64_t)(int64_t)(int32_t)(inst & 0xfffff000);
+    Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(inst & 0xfffff000)));
     debug("lui\n");
 }
 
 void CPU::exec_AUIPC(uint32_t inst) {
     // AUIPC forms a 32-bit offset from the 20 upper bits 
     // of the U-immediate
-    uint64_t imm = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>((inst & 0xfffff000))));
-    Registers[rd(inst)] = ((int64_t)ProgramCounter + (int64_t)imm) - 4;
+    uint64_t imm = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(inst & 0xfffff000)));
+    Registers[rd(inst)] = (ProgramCounter + imm) - 4;
     debug("auipc\n");
 }
 
@@ -24,8 +24,8 @@ uint32_t wrapping_add(uint32_t a, uint64_t b) {
 }
 
 void CPU::exec_JAL(uint32_t inst) {
-    uint64_t imm = imm_J(inst);
     Registers[rd(inst)] = ProgramCounter;
+    uint64_t imm = imm_J(inst);
     /*debug("JAL-> rd:%ld, pc:%lx\n", rd(inst), ProgramCounter);*/
     ProgramCounter = ProgramCounter + (int64_t)imm - 4;
     debug("jal\n");
@@ -33,7 +33,7 @@ void CPU::exec_JAL(uint32_t inst) {
 
 void CPU::exec_JALR(uint32_t inst) {
     uint64_t tmp = ProgramCounter;
-    uint64_t imm = imm_I(inst);
+    uint64_t imm = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(inst & 0xfff00000)) >> 20);
     ProgramCounter = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = tmp;
     debug("jalr\n");
@@ -41,127 +41,124 @@ void CPU::exec_JALR(uint32_t inst) {
 
 void CPU::exec_BEQ(uint32_t inst) {
     uint64_t imm = imm_B(inst);
-    if ((int64_t)Registers[rs1(inst)] == (int64_t)Registers[rs2(inst)])
-        ProgramCounter = ProgramCounter + (int64_t)imm - 4;
+    if (Registers[rs1(inst)] == Registers[rs2(inst)]) {
+        ProgramCounter = (ProgramCounter + imm) - 4;
+    }
     debug("beq\n");
 }
 void CPU::exec_BNE(uint32_t inst) {
     uint64_t imm = imm_B(inst);
-    if ((int64_t)Registers[rs1(inst)] != (int64_t)Registers[rs2(inst)])
-        ProgramCounter = (ProgramCounter + (int64_t)imm - 4);
-    if (cycle_counter > 480) {
-        std::cout << imm << std::endl;
-        std::cout << Registers[rs1(inst)] << std::endl;
-        std::cout << Registers[rs2(inst)] << std::endl;
-        std::cout << ProgramCounter << std::endl;
-        std::cout << rs1(inst) << std::endl;
-        std::cout << rs2(inst) << std::endl;
-        exit(90);
+    if (Registers[rs1(inst)] != Registers[rs2(inst)]) {
+        ProgramCounter = (ProgramCounter + imm) - 4;
     }
     debug("bne\n");
 }
 void CPU::exec_BLT(uint32_t inst) {
     /*debug("Operation: BLT\n");*/
     uint64_t imm = imm_B(inst);
-    if ((int64_t)Registers[rs1(inst)] < (int64_t)Registers[rs2(inst)])
-        ProgramCounter = ProgramCounter + (int64_t)imm - 4;
+    if (static_cast<int64_t>(Registers[rs1(inst)]) < static_cast<int64_t>(Registers[rs2(inst)])) {
+        ProgramCounter = (ProgramCounter + imm) - 4;
+    }
     debug("blt\n");
 }
 void CPU::exec_BGE(uint32_t inst) {
     uint64_t imm = imm_B(inst);
-    if ((int64_t)Registers[rs1(inst)] >= (int64_t)Registers[rs2(inst)])
-        ProgramCounter = ProgramCounter + (int64_t)imm - 4;
+    if (static_cast<int64_t>(Registers[rs1(inst)]) >= static_cast<int64_t>(Registers[rs2(inst)])) {
+        ProgramCounter = (ProgramCounter + imm) - 4;
+    }
     debug("bge\n");
 }
 void CPU::exec_BLTU(uint32_t inst) {
     uint64_t imm = imm_B(inst);
-    if (Registers[rs1(inst)] < Registers[rs2(inst)])
-        ProgramCounter = ProgramCounter + (int64_t)imm - 4;
+    if (Registers[rs1(inst)] < Registers[rs2(inst)]) {
+        ProgramCounter = (ProgramCounter + imm) - 4;
+    }
     debug("bltu\n");
 }
 void CPU::exec_BGEU(uint32_t inst) {
     uint64_t imm = imm_B(inst);
-    if (Registers[rs1(inst)] >= Registers[rs2(inst)])
-        ProgramCounter = (int64_t)ProgramCounter + (int64_t)imm - 4;
-    debug("jal\n");
+    if (Registers[rs1(inst)] >= Registers[rs2(inst)]) {
+        ProgramCounter = (ProgramCounter + imm) - 4;
+    }
+    debug("bgeu\n");
 }
 void CPU::exec_LB(uint32_t inst) {
     // load 1 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
-    Registers[rd(inst)] = (int64_t)(int8_t)HandleException(MemoryLoad(addr, 8));
+    uint64_t addr = Registers[rs1(inst)] + imm;
+    Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(HandleException(MemoryLoad(addr, 8)))));
     debug("lb\n");
 }
 void CPU::exec_LH(uint32_t inst) {
     // load 2 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
-    Registers[rd(inst)] = (int64_t)(int16_t)HandleException(MemoryLoad(addr, 16));
+    uint64_t addr = Registers[rs1(inst)] + imm;
+    Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(HandleException(MemoryLoad(addr, 16)))));
     debug("lh\n");
 }
 void CPU::exec_LW(uint32_t inst) {
     // load 4 byte to rd from address in rs1
-    uint64_t imm = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(inst)) >> 20);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
+    uint64_t imm = imm_I(inst);
+    uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(HandleException(MemoryLoad(addr, 32)))));
     debug("lw\n");
 }
 void CPU::exec_LD(uint32_t inst) {
     // load 8 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
-    Registers[rd(inst)] = (int64_t)HandleException(MemoryLoad(addr, 64));
+    uint64_t addr = Registers[rs1(inst)] + imm;
+    Registers[rd(inst)] = HandleException(MemoryLoad(addr, 64));
     debug("ld\n");
 }
 void CPU::exec_LBU(uint32_t inst) {
     // load unsigned 1 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
+    uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = HandleException(MemoryLoad(addr, 8));
     debug("lbu\n");
 }
 void CPU::exec_LHU(uint32_t inst) {
     // load unsigned 2 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
+    uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = HandleException(MemoryLoad(addr, 16));
     debug("lhu\n");
 }
 void CPU::exec_LWU(uint32_t inst) {
     // load unsigned 2 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
+    uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = HandleException(MemoryLoad(addr, 32));
     debug("lwu\n");
 }
 void CPU::exec_SB(uint32_t inst) {
     uint64_t imm = imm_S(inst);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
+    uint64_t addr = Registers[rs1(inst)] + imm;
     MemoryStore(addr, 8, Registers[rs2(inst)]);
     debug("sb\n");
 }
 void CPU::exec_SH(uint32_t inst) {
     uint64_t imm = imm_S(inst);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
+    uint64_t addr = Registers[rs1(inst)] + imm;
     MemoryStore(addr, 16, Registers[rs2(inst)]);
     debug("sh\n");
 }
 void CPU::exec_SW(uint32_t inst) {
-    uint64_t imm = (static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(inst & 0xfe000000)) >> 20)) | ((inst >> 7) & 0x1f);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
+    uint64_t imm = imm_S(inst);
+    uint64_t addr = Registers[rs1(inst)] + imm;
     MemoryStore(addr, 32, Registers[rs2(inst)]);
     debug("sw\n");
 }
 void CPU::exec_SD(uint32_t inst) {
     uint64_t imm = imm_S(inst);
-    uint64_t addr = Registers[rs1(inst)] + (int64_t)imm;
+    uint64_t addr = Registers[rs1(inst)] + imm;
     MemoryStore(addr, 64, Registers[rs2(inst)]);
     debug("sd\n");
 }
 
 void CPU::exec_ADDI(uint32_t inst) {
-    uint64_t imm = static_cast<uint64_t>((static_cast<int64_t>(static_cast<int32_t>(inst & 0xfff00000))) >> 20);
-    Registers[rd(inst)] = Registers[rs1(inst)] + (int64_t)imm;
+    uint64_t imm = imm_I(inst);
+    Registers[rd(inst)] = Registers[rs1(inst)] + imm;
     debug("addi\n");
 }
 
@@ -172,7 +169,7 @@ void CPU::exec_SLLI(uint32_t inst) {
 
 void CPU::exec_SLTI(uint32_t inst) {
     uint64_t imm = imm_I(inst);
-    Registers[rd(inst)] = (Registers[rs1(inst)] < (int64_t)imm) ? 1 : 0;
+    Registers[rd(inst)] = (static_cast<int64_t>(Registers[rs1(inst)]) < static_cast<int64_t>(imm)) ? 1 : 0;
     debug("slti\n");
 }
 
@@ -190,13 +187,13 @@ void CPU::exec_XORI(uint32_t inst) {
 
 void CPU::exec_SRLI(uint32_t inst) {
     uint64_t imm = imm_I(inst);
-    Registers[rd(inst)] = Registers[rs1(inst)] >> imm;
+    Registers[rd(inst)] = wrapping_shr(Registers[rs1(inst)], imm);
     debug("srli\n");
 }
 
 void CPU::exec_SRAI(uint32_t inst) {
     uint64_t imm = imm_I(inst);
-    Registers[rd(inst)] = (int32_t)Registers[rs1(inst)] >> imm;
+    Registers[rd(inst)] = static_cast<uint64_t>(wrapping_shr(static_cast<int64_t>(Registers[rs1(inst)]), imm));
     debug("srai\n");
 }
 
@@ -213,24 +210,22 @@ void CPU::exec_ANDI(uint32_t inst) {
 }
 
 void CPU::exec_ADD(uint32_t inst) {
-    Registers[rd(inst)] =
-        (uint64_t)((int64_t)Registers[rs1(inst)] + (int64_t)Registers[rs2(inst)]);
+    Registers[rd(inst)] = Registers[rs1(inst)] + Registers[rs2(inst)];
     debug("add\n");
 }
 
 void CPU::exec_SUB(uint32_t inst) {
-    Registers[rd(inst)] =
-        (uint64_t)((int64_t)Registers[rs1(inst)] - (int64_t)Registers[rs2(inst)]);
+    Registers[rd(inst)] = Registers[rs1(inst)] - Registers[rs2(inst)];
     debug("sub\n");
 }
 
 void CPU::exec_SLL(uint32_t inst) {
-    Registers[rd(inst)] = Registers[rs1(inst)] << (int64_t)Registers[rs2(inst)];
+    Registers[rd(inst)] = wrapping_shl(Registers[rs1(inst)], static_cast<uint32_t>(static_cast<uint64_t>(Registers[rs2(inst)] & 0x3f)));
     debug("sll\n");
 }
 
 void CPU::exec_SLT(uint32_t inst) {
-    Registers[rd(inst)] = (Registers[rs1(inst)] < (int64_t)Registers[rs2(inst)]) ? 1 : 0;
+    Registers[rd(inst)] = (static_cast<int64_t>(Registers[rs1(inst)]) < static_cast<int32_t>(Registers[rs2(inst)])) ? 1 : 0;
     debug("slt\n");
 }
 
@@ -245,13 +240,12 @@ void CPU::exec_XOR(uint32_t inst) {
 }
 
 void CPU::exec_SRL(uint32_t inst) {
-    Registers[rd(inst)] = Registers[rs1(inst)] >> Registers[rs2(inst)];
+    Registers[rd(inst)] = wrapping_shr(Registers[rs1(inst)], static_cast<uint32_t>(static_cast<uint64_t>(Registers[rs2(inst)] & 0x3f)));
     debug("srl\n");
 }
 
 void CPU::exec_SRA(uint32_t inst) {
-    Registers[rd(inst)] = (int32_t)Registers[rs1(inst)] >>
-        (int64_t)Registers[rs2(inst)];
+    Registers[rd(inst)] = static_cast<uint64_t>(wrapping_shr(static_cast<int64_t>(Registers[rs1(inst)]), static_cast<uint32_t>(static_cast<uint64_t>(Registers[rs2(inst)] & 0x3f))));
     debug("sra\n");
 }
 
@@ -294,15 +288,19 @@ std::variant<uint64_t, Exception> CPU::exec_ECALLBREAK(uint32_t inst) {
     int funct7 = (inst >> 25) & 0x7f;
     if (imm_I(inst) == 0x0) {
         return exec_ECALL(inst);
-    } else if (imm_I(inst) == 0x1) {
+    }
+    else if (imm_I(inst) == 0x1) {
         return exec_EBREAK(inst);
-    } else if (rs2(inst) == 0x2) {
+    }
+    else if (rs2(inst) == 0x2) {
         if (funct7 == 0x8) {
             exec_SRET(inst);
-        } else if (funct7 == 0x18) {
+        }
+        else if (funct7 == 0x18) {
             exec_MRET(inst);
         }
-    } else if (funct7 == 0x9) {
+    }
+    else if (funct7 == 0x9) {
         exec_SFENCE_VMA(inst);
     }
     return (uint64_t)0;
@@ -311,26 +309,24 @@ std::variant<uint64_t, Exception> CPU::exec_ECALLBREAK(uint32_t inst) {
 
 void CPU::exec_ADDIW(uint32_t inst) {
     uint64_t imm = imm_I(inst);
-    Registers[rd(inst)] = Registers[rs1(inst)] + (int64_t)imm;
+    Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(Registers[rs1(inst)] + imm)));
     debug("addiw\n");
 }
 
 void CPU::exec_SLLIW(uint32_t inst) {
-    Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)] << shamt(inst));
+    Registers[rd(inst)] = wrapping_shl(Registers[rs1(inst)], static_cast<uint32_t>(imm_I(inst) & 0x1f));
     debug("slliw\n");
 }
 void CPU::exec_SRLIW(uint32_t inst) {
-    Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)] >> shamt(inst));
+    Registers[rd(inst)] = static_cast<int32_t>(wrapping_shr(static_cast<uint64_t>(Registers[rs1(inst)]), static_cast<uint32_t>(imm_I(inst) & 0x1f)));
     debug("srliw\n");
 }
 void CPU::exec_SRAIW(uint32_t inst) {
-    uint64_t imm = imm_I(inst);
-    Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)] >> (uint64_t)(int64_t)(int32_t)imm);
+    Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(wrapping_shr(static_cast<int32_t>(Registers[rs1(inst)]), static_cast<uint32_t>(imm_I(inst) & 0x1f))));
     debug("sraiw\n");
 }
 void CPU::exec_ADDW(uint32_t inst) {
-    Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)]
-        + (int64_t)Registers[rs2(inst)]);
+    Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(Registers[rs1(inst)] + Registers[rs2(inst)])));
     debug("addw\n");
 }
 void CPU::exec_MULW(uint32_t inst) {
@@ -339,8 +335,7 @@ void CPU::exec_MULW(uint32_t inst) {
     debug("mulw\n");
 }
 void CPU::exec_SUBW(uint32_t inst) {
-    Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)]
-        - (int64_t)Registers[rs2(inst)]);
+    Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int32_t>(Registers[rs1(inst)] - Registers[rs2(inst)]));
     debug("subw\n");
 }
 void CPU::exec_DIVW(uint32_t inst) {
@@ -349,11 +344,11 @@ void CPU::exec_DIVW(uint32_t inst) {
     debug("divw\n");
 }
 void CPU::exec_SLLW(uint32_t inst) {
-    Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)] << Registers[rs2(inst)]);
+    Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int32_t>(wrapping_shl(static_cast<uint32_t>(Registers[rs1(inst)]), static_cast<uint32_t>(Registers[rs2(inst)] & 0x1f))));
     debug("sllw\n");
 }
 void CPU::exec_SRLW(uint32_t inst) {
-    Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)] >> Registers[rs2(inst)]);
+    Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int32_t>(wrapping_shr(static_cast<uint32_t>(Registers[rs1(inst)]), static_cast<uint32_t>(static_cast<uint64_t>(Registers[rs2(inst)] & 0x3f)))));
     debug("srlw\n");
 }
 void CPU::exec_DIVUW(uint32_t inst) {
@@ -361,7 +356,7 @@ void CPU::exec_DIVUW(uint32_t inst) {
     debug("divuw\n");
 }
 void CPU::exec_SRAW(uint32_t inst) {
-    Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)] >> (uint64_t)(int64_t)(int32_t)Registers[rs2(inst)]);
+    Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int32_t>(Registers[rs1(inst)]) >> static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint64_t>(Registers[rs2(inst)] & 0x3f))));
     debug("sraw\n");
 }
 void CPU::exec_REMW(uint32_t inst) {
@@ -370,7 +365,16 @@ void CPU::exec_REMW(uint32_t inst) {
     debug("remw\n");
 }
 void CPU::exec_REMUW(uint32_t inst) {
-    Registers[rd(inst)] = Registers[rs1(inst)] % (int64_t)Registers[rs2(inst)];
+    switch (Registers[rs2(inst)]) {
+    case 0:
+        Registers[rd(inst)] = Registers[rs1(inst)];
+        break;
+
+    default:
+        uint32_t dividend = static_cast<uint32_t>(Registers[rs1(inst)]);
+        uint32_t divisor = static_cast<uint32_t>(Registers[rs2(inst)]);
+        Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int32_t>(dividend % divisor));
+    }
     debug("remuw\n");
 }
 
@@ -384,15 +388,15 @@ void CPU::exec_SC_W(uint32_t inst) {
     debug("amosc.w\n");
 }
 void CPU::exec_AMOSWAP_W(uint32_t inst) {
-    Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 32));
     MemoryStore(rs1(inst), 32, rs2(inst));
+    Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 32));
     debug("amoswap.w\n");
 }
 void CPU::exec_AMOADD_W(uint32_t inst) {
     uint32_t tmp = HandleException(MemoryLoad(Registers[rs1(inst)], 32));
-    uint32_t res = tmp + (uint32_t)Registers[rs2(inst)];
-    Registers[rd(inst)] = tmp;
+    uint32_t res = tmp + Registers[rs2(inst)];
     MemoryStore(Registers[rs1(inst)], 32, res);
+    Registers[rd(inst)] = tmp;
     debug("amoadd.w\n");
 }
 void CPU::exec_AMOXOR_W(uint32_t inst) {
@@ -447,15 +451,15 @@ void CPU::exec_SC_D(uint32_t inst) {
     debug("amosc.d\n");
 }
 void CPU::exec_AMOSWAP_D(uint32_t inst) {
-    Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 64));
     MemoryStore(rs1(inst), 64, rs2(inst));
+    Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 64));
     debug("amoswap.d\n");
 }
 void CPU::exec_AMOADD_D(uint32_t inst) {
     uint64_t tmp = HandleException(MemoryLoad(Registers[rs1(inst)], 64));
-    uint64_t res = tmp + (uint64_t)Registers[rs2(inst)];
-    Registers[rd(inst)] = tmp;
+    uint64_t res = tmp + Registers[rs2(inst)];
     MemoryStore(Registers[rs1(inst)], 64, res);
+    Registers[rd(inst)] = tmp;
     debug("amoadd.d\n");
 }
 void CPU::exec_AMOXOR_D(uint32_t inst) {
@@ -556,13 +560,14 @@ void CPU::exec_SFENCE_VMA(uint32_t inst) {
 }
 void CPU::exec_SRET(uint32_t inst) {
     switch ((csrRead(SSTATUS) >> 8) & 1) {
-        case 1: CurrentMode = Mode::Supervisor; break;
-        default: CurrentMode = Mode::User; break;
+    case 1: CurrentMode = Mode::Supervisor; break;
+    default: CurrentMode = Mode::User; break;
     };
 
     if (((csrRead(SSTATUS) >> 5) & 1) == 1) {
         csrWrite(SSTATUS, (csrRead(SSTATUS) | (1 << 1)));
-    } else {
+    }
+    else {
         csrWrite(SSTATUS, (csrRead(SSTATUS) & !(1 << 1)));
     }
 
@@ -572,16 +577,17 @@ void CPU::exec_SRET(uint32_t inst) {
 }
 void CPU::exec_MRET(uint32_t inst) {
     ProgramCounter = csrRead(MEPC);
-    
+
     switch ((csrRead(MSTATUS) >> 11) & 0b11) {
-        case 2: CurrentMode = Mode::Machine; break;
-        case 1: CurrentMode = Mode::Supervisor; break;
-        default: CurrentMode = Mode::User; break;
+    case 2: CurrentMode = Mode::Machine; break;
+    case 1: CurrentMode = Mode::Supervisor; break;
+    default: CurrentMode = Mode::User; break;
     };
 
     if (((csrRead(MSTATUS) >> 7) & 1) == 1) {
         csrWrite(MSTATUS, (csrRead(MSTATUS) | (1 << 3)));
-    } else {
+    }
+    else {
         csrWrite(MSTATUS, (csrRead(MSTATUS) & !(1 << 3)));
     }
 

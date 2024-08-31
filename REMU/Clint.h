@@ -13,9 +13,9 @@ public:
     std::variant<uint64_t, Exception> store(uint64_t addr, uint64_t size, uint64_t value) override;
 
 private:
-    uint64_t load32(uint64_t addr);
+    uint64_t load64(uint64_t addr);
 
-    void store32(uint64_t addr, uint64_t value);
+    void store64(uint64_t addr, uint64_t value);
 
     uint64_t mtime;
     uint64_t mtimecmp;
