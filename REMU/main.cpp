@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     mac->ReturnCPU()->EnableDebugging(debug);
 
     while (mac->Loop()) {
-        mac->ReturnCPU()->DumpRegisters();
+        //mac->ReturnCPU()->DumpRegisters();
     }
     return 0;
 }

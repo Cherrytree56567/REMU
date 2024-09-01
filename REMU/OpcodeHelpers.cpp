@@ -2,15 +2,15 @@
 #include "OpcodeHelpers.h"
 
 uint64_t rd(uint32_t inst) {
-    return (inst >> 7) & 0x1f; // rd in bits 11..7
+    return ((inst & 0x00000f80) >> 7); // rd in bits 11..7
 }
 
 uint64_t rs1(uint32_t inst) {
-    return (inst >> 15) & 0x1f;   // rs1 in bits 19..15
+    return ((inst & 0x000f8000) >> 15);   // rs1 in bits 19..15
 }
 
 uint64_t rs2(uint32_t inst) {
-    return (inst >> 20) & 0x1f;   // rs2 in bits 24..20
+    return ((inst & 0x01f00000) >> 20);   // rs2 in bits 24..20
 }
 
 uint64_t imm_I(uint32_t inst) {

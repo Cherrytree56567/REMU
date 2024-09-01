@@ -1,17 +1,17 @@
 #include "CPU.h"
 
 CPU::CPU(std::shared_ptr<Bus> BUS) {
-    Registers[0] = 0x00; // Register x0 hardwired to 0
-    Registers[2] = MEMORY_BASE + MEMORY_SIZE; // Set Stack Pointer
-    ProgramCounter = MEMORY_BASE;
-    bus = BUS;
-    Memory = bus->GetRam();
     for (auto& csra : CSRegisters) {
         csra = 0;
     }
     for (auto& regs : Registers) {
         regs = 0;
     }
+    Registers[0] = 0x00; // Register x0 hardwired to 0
+    Registers[2] = MEMORY_BASE + MEMORY_SIZE; // Set Stack Pointer
+    ProgramCounter = MEMORY_BASE;
+    bus = BUS;
+    Memory = bus->GetRam();
     page_table = 0;
     enable_paging = false;
     cycle_counter = 0;
@@ -57,30 +57,20 @@ std::variant<uint64_t, Exception> CPU::translate(uint64_t addr, AccessType acces
     uint64_t pte;
 
     while (true) {
-        auto po = bus->Load(a + vpn[i] * 8, 64);
-        if (std::holds_alternative<uint64_t>(po)) {
-            pte = std::get<uint64_t>(po);
-        }
-        else {
-            pte = 0;
-                std::cout << "Failed to bus load.\n";
-        }
+        pte = HandleException(bus->Load(a + vpn[i] * 8, 64));
 
         uint64_t v = pte & 1;
-
         uint64_t r = (pte >> 1) & 1;
-
         uint64_t w = (pte >> 2) & 1;
-
         uint64_t x = (pte >> 3) & 1;
 
         if (v == 0 || (r == 0 && w == 1)) {
-            switch (access_type) {
-            case AccessType::Instruction: return Exception::InstructionPageFault; break;
-            case AccessType::Load: return Exception::LoadPageFault; break;
-            case AccessType::Store: return Exception::StoreAMOPageFault; break;
-            }
-        }
+			switch (access_type) {
+			case AccessType::Instruction: return Exception::InstructionPageFault; break;
+			case AccessType::Load: return Exception::LoadPageFault; break;
+			case AccessType::Store: return Exception::StoreAMOPageFault; break;
+			}
+		}
 
         if (r == 1 || x == 1) {
             break;
@@ -99,7 +89,6 @@ std::variant<uint64_t, Exception> CPU::translate(uint64_t addr, AccessType acces
             case AccessType::Store: return Exception::StoreAMOPageFault; break;
             }
         }
-
     }
 
     uint64_t ppn[3] = {
@@ -316,11 +305,17 @@ uint64_t CPU::HandleException(std::variant<uint64_t, Exception> s) {
 }
 
 uint64_t CPU::csrRead(uint64_t csr) {
-    return (uint64_t)(uint32_t)CSRegisters[csr];
+    switch (csr) {
+    case SIE: return CSRegisters[MIE] & CSRegisters[MIDELEG]; break;
+    default: return CSRegisters[csr]; break;
+    }
 }
 
 void CPU::csrWrite(uint64_t csr, uint64_t value) {
-    CSRegisters[csr] = value;
+    switch (csr) {
+    case SIE: CSRegisters[MIE] = (CSRegisters[MIE] & !CSRegisters[MIDELEG]) | (value & CSRegisters[MIDELEG]); break;
+    default: CSRegisters[csr] = value; break;
+    }
 }
 
 std::variant<uint64_t, Exception> CPU::Execute(uint32_t inst) {
@@ -328,7 +323,7 @@ std::variant<uint64_t, Exception> CPU::Execute(uint32_t inst) {
     using namespace std::chrono;
     int opcode = inst & 0x0000007f;     // opcode in bits 6..0
     int funct3 = (inst & 0x00007000) >> 12;    // funct3 in bits 14..12
-    int funct7 = (inst >> 25) & 0x7f;   // funct7 in bits 31..25
+    int funct7 = (inst & 0xfe000000) >> 25;   // funct7 in bits 31..25
     int funct5 = (funct7 & 0b1111100) >> 2;
 
     Registers[0] = 0;

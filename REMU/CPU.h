@@ -1,6 +1,6 @@
 #pragma once
 #define MEMORY_BASE 0x80000000
-#define MEMORY_SIZE 1024*1024*1
+#define MEMORY_SIZE 1024*1024*128
 
 #define USTATUS     0x000 // URW User status register.
 #define UIE         0x004 // URW User interrupt-enable register.
@@ -427,7 +427,7 @@ public:
     Mode CurrentMode = Mode::Machine;
     bool EnableDebug = false;
     uint64_t PAGE_SIZE = 4096;
-    bool enable_paging = true;
+    bool enable_paging = false;
     uint64_t page_table = 0;
     uint64_t cycle_counter;
     std::chrono::steady_clock::time_point start_time;

@@ -84,4 +84,7 @@ RAM::RAM(size_t size) {
     MemorySize = 1024 * 1024 * size; // (size) MiB
     Memory = std::make_shared<std::vector<uint8_t>>();
     (*Memory).resize(MemorySize);
+    for (auto& i : *Memory) {
+        i = 0;
+    }
 }
