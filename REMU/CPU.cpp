@@ -199,7 +199,7 @@ std::variant<uint64_t, Exception> CPU::Fetch() {
 }
 
 bool CPU::Loop() {
-    uint32_t inst;
+    uint64_t inst;
     auto result = Fetch();
     if (std::holds_alternative<uint64_t>(result)) {
         inst = std::get<uint64_t>(result);
@@ -308,7 +308,7 @@ void CPU::csrWrite(uint64_t csr, uint64_t value) {
     }
 }
 
-std::variant<uint64_t, Exception> CPU::Execute(uint32_t inst) {
+std::variant<uint64_t, Exception> CPU::Execute(uint64_t inst) {
     DumpRegisters();
     using namespace std::chrono;
     int opcode = inst & 0x0000007f;     // opcode in bits 6..0
