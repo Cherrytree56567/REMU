@@ -56,12 +56,9 @@ uint64_t csr(uint64_t inst) {
 }
 
 uint64_t wrapping_shr(uint64_t value, unsigned int shift) {
-    if (shift >= 64) {
-        return 0; // If shift is greater than or equal to the bit width, result is always 0
-    }
-    return (value >> shift) | (value << (64 - shift));
+    return (value >> shift);
 }
 
 uint64_t wrapping_shl(uint64_t value, unsigned int shift) {
-    return (shift >= 64) ? 0 : ((value << shift) | (value >> (64 - shift)));
+    return (value << shift);
 }
