@@ -27,16 +27,20 @@ void Trap::take_trap_helper(std::any an, bool is_interrupt) const {
     if (is_interrupt) {
         cause = (1 << 63) | cause;
     }
-    if ((previous_mode <= Mode::Supervisor) && (cpu->csrRead(MEDELEG) >> ((uint32_t)cause % 32)) & 1 != 0) {
+    if ((previous_mode <= Mode::Supervisor) && (cpu->csrRead(MEDELEG) >> static_cast<uint32_t>(cause)) & 1 != 0) {
         cpu->CurrentMode = Mode::Supervisor;
 
         if (is_interrupt) {
             uint64_t stvec = cpu->csrRead(STVEC);
-            uint64_t vector = (stvec & 1) ? (4 * cause) : 0;
-            cpu->ProgramCounter = (stvec & ~1) + vector;
+            uint64_t vector;
+            switch (stvec & 1) {
+            case 1: vector = (4 * cause); break;
+            default: vector = 0; break;
+			}
+            cpu->ProgramCounter = (stvec & !1) + vector;
         }
         else {
-            cpu->ProgramCounter = cpu->csrRead(STVEC) & ~1;
+            cpu->ProgramCounter = cpu->csrRead(STVEC) & !1;
         }
 
         cpu->csrWrite(SEPC, (exception_pc & !1));
@@ -63,11 +67,15 @@ void Trap::take_trap_helper(std::any an, bool is_interrupt) const {
 
         if (is_interrupt) {
             uint64_t mtvec = cpu->csrRead(MTVEC);
-            uint64_t vector = (mtvec & 1) ? (4 * cause) : 0;
-            cpu->ProgramCounter = (mtvec & ~1) + vector;
+            uint64_t vector;
+            switch (mtvec & 1) {
+            case 1: vector = (4 * cause); break;
+            default: vector = 0; break;
+			}
+            cpu->ProgramCounter = (mtvec & !1) + vector;
         }
         else {
-            cpu->ProgramCounter = cpu->csrRead(MTVEC) & ~1;
+            cpu->ProgramCounter = cpu->csrRead(MTVEC) & !1;
         }
 
         cpu->csrWrite(MEPC, exception_pc & !1);

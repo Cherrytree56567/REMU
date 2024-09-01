@@ -38,7 +38,6 @@ public:
     virtual std::variant<uint64_t, Exception> load(uint64_t addr, uint64_t size) override;
     virtual std::variant<uint64_t, Exception> store(uint64_t addr, uint64_t size, uint64_t value) override;
 
-private:
     bool is_interrupting();
     
     uint64_t load32(uint64_t addr);

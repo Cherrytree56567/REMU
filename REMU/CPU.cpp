@@ -121,12 +121,12 @@ std::variant<uint64_t, Exception> CPU::translate(uint64_t addr, AccessType acces
 Interrupt CPU::check_pending_interrupt() {
     switch (CurrentMode) {
         case Mode::Machine: {
-            if ((csrRead(MSTATUS) >> 3) & (1 == 0)) {
+            if ((csrRead(MSTATUS) >> 3) & 1 == 0) {
                 return None;
             }
         }; break;
         case Mode::Supervisor: {
-            if ((csrRead(SSTATUS) >> 1) & (1 == 0)) {
+            if ((csrRead(SSTATUS) >> 1) & 1 == 0) {
                 return None;
             }
         }; break;
@@ -137,6 +137,11 @@ Interrupt CPU::check_pending_interrupt() {
 
     if (bus->GetUart()->is_interrupting()) {
         irq = UART_IRQ;
+    } else if (bus->GetVirtio()->is_interrupting()) {
+        // Access disk by direct dram access (DMA). An interrupt is raised after a disk
+        // access is done.
+        Virtio{ {} }.disk_access(this);
+        irq = VIRTIO_IRQ;
     } else {
         irq = 0;
     }
@@ -186,13 +191,10 @@ Interrupt CPU::check_pending_interrupt() {
 std::variant<uint64_t, Exception> CPU::Fetch() {
     uint64_t p_pc;
     auto pl = translate(ProgramCounter, AccessType::Instruction);
-    if (std::holds_alternative<uint64_t>(pl)) {
-        p_pc = std::get<uint64_t>(pl);
-    }
-    else {
-        p_pc = 0;
-        std::cout << "Failed to translate pc.\n";
-    }
+    p_pc = HandleException(pl);
+    if (p_pc == 0) {
+		return Exception::InstructionAccessFault;
+	}
     return MemoryLoad(p_pc, 32);
 }
 
@@ -241,26 +243,14 @@ bool CPU::Loop() {
 std::variant<uint64_t, Exception> CPU::MemoryLoad(uint64_t addr, uint64_t size) {
     uint64_t p_addr;
     auto pl = translate(addr, AccessType::Load);
-    if (std::holds_alternative<uint64_t>(pl)) {
-        p_addr = std::get<uint64_t>(pl);
-    }
-    else {
-        p_addr = 0;
-        std::cout << "Failed to translate addr.\n";
-    }
+    p_addr = HandleException(pl);
     return bus->Load(p_addr, size);
 }
 
 std::variant<uint64_t, Exception> CPU::MemoryStore(uint64_t addr, uint64_t size, uint64_t value) {
     uint64_t p_addr;
     auto pl = translate(addr, AccessType::Store);
-    if (std::holds_alternative<uint64_t>(pl)) {
-        p_addr = std::get<uint64_t>(pl);
-    }
-    else {
-        p_addr = 0;
-        std::cout << "Failed to translate addr.\n";
-    }
+    p_addr = HandleException(pl);
     return bus->Store(p_addr, size, value);
 }
 
