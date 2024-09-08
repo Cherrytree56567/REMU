@@ -70,6 +70,9 @@ jobs:
       if: runner.os == 'Linux'
       
     - name: Configure CMake
+      env:
+        CC:   gcc-13
+        CXX:  g++-13
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
