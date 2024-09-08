@@ -17,6 +17,7 @@ set(SOURCES
     Trap.cpp
     Uart.cpp
     Virtio.cpp
+    RAM.cpp
 )
 
 add_executable(REMU ${SOURCES})
