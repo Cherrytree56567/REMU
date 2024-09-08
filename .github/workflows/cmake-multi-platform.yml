@@ -67,7 +67,7 @@ jobs:
         version: latest
         platform: x64
         cc: 1
-      if: runner.c_compiler == clang
+      if: runner.c_compiler == 'clang'
       
     - name: Configure CMake
       run: >
