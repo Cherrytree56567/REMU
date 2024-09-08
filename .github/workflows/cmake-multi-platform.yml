@@ -64,13 +64,13 @@ jobs:
 
     - name: Install Clang
       run: |
-        sudo apt update
-        sudo apt install wget lsb-release
-        wget -O - https://apt.llvm.org/llvm.sh | sudo bash
-        sudo apt install clang-16
-        clang-17 --version
-        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 100
-        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-17 100
+        git clone --depth=1 https://github.com/llvm/llvm-project.git
+        cd llvm-project
+        git fetch --unshallow
+        mkdir build
+        cd build
+        cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../llvm
+        make
       if: runner.os == 'Linux'
       
     - name: Configure CMake
