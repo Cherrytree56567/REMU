@@ -58,6 +58,7 @@ jobs:
       with:
         version: latest
         platform: x64
+        cc: 1
       if: runner.os == 'Linux'
 
     - name: Install Clang
@@ -65,18 +66,8 @@ jobs:
       with:
         version: latest
         platform: x64
+        cc: 1
       if: runner.os == 'Linux'
-
-    - name: Setup GCC and Clang
-      run: |
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 50
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 50
-        sudo update-alternatives --config gcc
-        sudo update-alternatives --config g++
-        echo "/usr/local/clang/bin" | sudo tee -a /etc/paths
-        export PATH="/usr/local/clang/bin:$PATH"
-        export CC=clang
-        export CXX=clang++
       
     - name: Configure CMake
       run: >
