@@ -28,11 +28,11 @@ jobs:
         c_compiler: [gcc, clang, cl]
         include:
           - os: windows-latest
-            c_compiler: /usr/bin/clang
-            cpp_compiler: /usr/bin/clang++
+            c_compiler: cl
+            cpp_compiler: cl
           - os: ubuntu-latest
-            c_compiler: /usr/bin/gcc
-            cpp_compiler: /usr/bin/g++
+            c_compiler: gcc
+            cpp_compiler: g++
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
@@ -67,7 +67,7 @@ jobs:
         version: latest
         platform: x64
         cc: 1
-      if: runner.c_compiler == 'clang'
+      if: runner.os == 'Linux'
       
     - name: Configure CMake
       run: >
