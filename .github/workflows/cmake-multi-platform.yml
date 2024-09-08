@@ -53,6 +53,11 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/REMU/build" >> "$GITHUB_OUTPUT"
 
+    - name: Prepare Repo
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+      if: runner.os == 'Linux'
+    
     - name: Install GCC
       uses: Dup4/actions-setup-gcc@v1
       with:
