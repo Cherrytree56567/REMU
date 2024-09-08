@@ -55,24 +55,22 @@ jobs:
 
     - name: Install GCC 13
       run: |
-        sudo apt update
-        sudo apt install wget lsb-release
-        wget -O - https://apt.llvm.org/llvm.sh | sudo bash
-        sudo apt install clang-17
-        clang-17 --version
-        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 100
-        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-17 100
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt install gcc-13 g++-13
+        gcc-13 --version
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 60
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 60
       if: runner.os == 'Linux'
 
     - name: Install Clang
       run: |
-        git clone --depth=1 https://github.com/llvm/llvm-project.git
-        cd llvm-project
-        git fetch --unshallow
-        mkdir build
-        cd build
-        cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../llvm
-        make
+        sudo apt update
+        sudo apt install wget lsb-release
+        wget -O - https://apt.llvm.org/llvm.sh | sudo bash
+        sudo apt install clang-14
+        clang-14 --version
+        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 100
+        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-14 100
       if: runner.os == 'Linux'
       
     - name: Configure CMake
