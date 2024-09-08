@@ -1,5 +1,4 @@
 #include "CPU.h"
-#include <boost/multiprecision/cpp_int.hpp>
 
 void CPU::exec_LUI(uint64_t inst) {
     // LUI places upper 20 bits of U-immediate value to rd
@@ -282,30 +281,6 @@ std::variant<uint64_t, Exception> CPU::exec_ECALL(uint64_t inst) {
 std::variant<uint64_t, Exception> CPU::exec_EBREAK(uint64_t inst) {
     return Exception::Breakpoint;
 }
-
-std::variant<uint64_t, Exception> CPU::exec_ECALLBREAK(uint64_t inst) {
-    debug("ecallbreak\n");
-    int funct7 = (inst >> 25) & 0x7f;
-    if (imm_I(inst) == 0x0) {
-        return exec_ECALL(inst);
-    }
-    else if (imm_I(inst) == 0x1) {
-        return exec_EBREAK(inst);
-    }
-    else if (rs2(inst) == 0x2) {
-        if (funct7 == 0x8) {
-            exec_SRET(inst);
-        }
-        else if (funct7 == 0x18) {
-            exec_MRET(inst);
-        }
-    }
-    else if (funct7 == 0x9) {
-        exec_SFENCE_VMA(inst);
-    }
-    return (uint64_t)0;
-}
-
 
 void CPU::exec_ADDIW(uint64_t inst) {
     uint64_t imm = imm_I(inst);

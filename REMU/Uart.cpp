@@ -1,6 +1,43 @@
+#ifdef LINUX
+#include <unistd.h>
+#include <fcntl.h>
+#else
 #include <windows.h>
+#endif
 #include "Uart.h"
 
+#ifdef LINUX
+Uart::Uart() {
+    uart = std::make_shared<std::tuple<std::mutex, std::condition_variable, std::array<uint8_t, UART_SIZE>>>();
+    interrupting = std::make_shared<std::atomic_bool>(false);
+
+    {
+        std::lock_guard<std::mutex> lock(std::get<0>((*uart)));
+        std::get<2>((*uart))[UART_LSR - UART_BASE] |= UART_LSR_TX;
+    }
+
+    std::thread([this]() {
+        std::array<uint8_t, 1> byte;
+        int fd = STDIN_FILENO; // Use file descriptor for standard input
+        while (true) {
+            ssize_t bytesRead = read(fd, byte.data(), byte.size());
+            if (bytesRead > 0) {
+                std::unique_lock<std::mutex> lock(std::get<0>((*uart)));
+                // Wait for the thread to start up.
+                while ((std::get<2>((*uart))[UART_LSR - UART_BASE] & UART_LSR_RX) == 1) {
+                    std::get<1>((*uart)).wait(lock);
+                }
+                std::get<2>((*uart))[0] = byte[0];
+                interrupting->store(true, std::memory_order_release);
+                // Data has been received.
+                std::get<2>((*uart))[UART_LSR - UART_BASE] |= UART_LSR_RX;
+            } else {
+                std::cerr << "Error reading from stdin" << std::endl;
+            }
+        }
+    }).detach();
+}
+#else
 Uart::Uart() {
     uart = std::make_shared<std::tuple<std::mutex, std::condition_variable, std::array<uint8_t, UART_SIZE>>>();
     interrupting = std::make_shared<std::atomic_bool>(false);
@@ -32,6 +69,7 @@ Uart::Uart() {
         }
         }).detach();
 }
+#endif
 
 uint64_t Uart::load8(uint64_t addr) {
     auto& [mutex, cvar, uartArray] = *uart;

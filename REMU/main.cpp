@@ -35,8 +35,8 @@
 #include "Machine.h"
 
 int main(int argc, char *argv[]) {
-    bool debug = true; // argv[3]
-    std::shared_ptr<REMUMAC::Machine> mac = std::make_shared<REMUMAC::Machine>("xv6-kernel.bin", "xv6-fs.img", 128); // argv[1], argv[2]
+    bool debug = false; // argv[3]
+    std::shared_ptr<REMUMAC::Machine> mac = std::make_shared<REMUMAC::Machine>("tests/helloworld.bin", "tests/xv6-fs.img", 128); // argv[1], argv[2]
     mac->ReturnCPU()->EnableDebugging(debug);
 
     while (mac->Loop()) {
