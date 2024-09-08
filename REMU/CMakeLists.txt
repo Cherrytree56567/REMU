@@ -19,8 +19,8 @@ set(SOURCES
     Virtio.cpp
 )
 
+add_executable(REMU ${SOURCES})
+
 if(UNIX)
     target_compile_definitions(REMU PRIVATE LINUX)
 endif()
-
-add_executable(REMU ${SOURCES})
