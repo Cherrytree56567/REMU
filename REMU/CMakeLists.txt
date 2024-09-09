@@ -22,8 +22,7 @@ set(SOURCES
 
 add_executable(REMU ${SOURCES})
 
-target_link_libraries(REMU PRIVATE pthread)
-
 if(UNIX)
     target_compile_definitions(REMU PRIVATE LINUX)
+    target_link_libraries(REMU PRIVATE pthread)
 endif()
