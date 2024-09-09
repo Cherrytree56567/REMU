@@ -283,15 +283,17 @@ public:
 
     template<typename... Args>
     void debug(const std::string& format_str, Args&&... args) {
-        if constexpr (sizeof...(args) > 0) {
-            std::string formatted_str = std::vformat(format_str, std::make_format_args(args...));
-            std::cout << "[REMU::CORE] Warning: " << formatted_str << std::endl;
-        }
-        else if (!format_str.empty()) {
-            std::cout << "[REMU::CORE] Warning: " << format_str << std::endl;
-        }
-        else {
-            std::cout << "[REMU::CORE] Warning: " << std::endl;
+        if (EnableDebug) {
+            if constexpr (sizeof...(args) > 0) {
+                std::string formatted_str = std::vformat(format_str, std::make_format_args(args...));
+                std::cout << "[REMU::CORE] Warning: " << formatted_str << std::endl;
+            }
+            else if (!format_str.empty()) {
+                std::cout << "[REMU::CORE] Warning: " << format_str << std::endl;
+            }
+            else {
+                std::cout << "[REMU::CORE] Warning: " << std::endl;
+            }
         }
     }
 
