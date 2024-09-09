@@ -208,7 +208,7 @@ bool CPU::Loop() {
         ExceptionTrap ext(std::get<Exception>(result));
         ext.take_trap(std::any_cast<std::shared_ptr<CPU>>(cp));
         if (ext.is_fatal(std::get<Exception>(result))) {
-            return false;
+            debug(Warning, "Exception - {}", static_cast<int>(ext.exception_code()));
         }
         inst = 0;
     }
@@ -224,7 +224,7 @@ bool CPU::Loop() {
         ExceptionTrap ext(std::get<Exception>(resulta));
         ext.take_trap(std::any_cast<std::shared_ptr<CPU>>(cp));
         if (ext.is_fatal(std::get<Exception>(resulta))) {
-            return false;
+            debug(Warning, "Exception - {}", static_cast<int>(ext.exception_code()));
         }
     }
 
@@ -233,9 +233,6 @@ bool CPU::Loop() {
         InterruptTrap sssss(sads);
         sssss.take_trap(std::any_cast<std::shared_ptr<CPU>>(cp));
     }
-
-    if (ProgramCounter == 0)
-        return false;
 
     return true;
 }
@@ -324,195 +321,223 @@ std::variant<uint64_t, Exception> CPU::Execute(uint64_t inst) {
     double time_elapsed = duration_cast<duration<double>>(current_time - start_time).count();
 
     switch (opcode) {
-    case 0x03:
+    case 0x37:   exec_LUI(inst); break;  // RV32I Base
+    case 0x17: exec_AUIPC(inst); break;  // RV32I Base
+
+    case 0x6f:   exec_JAL(inst); break;  // RV32I Base
+    case 0x67:  exec_JALR(inst); break;  // RV32I Base
+
+    case 0x63: // B-Type
         switch (funct3) {
-        case 0x0: exec_LB(inst); break;
-        case 0x1: exec_LH(inst); break;
-        case 0x2: exec_LW(inst); break;
-        case 0x3: exec_LD(inst); break;
-        case 0x4: exec_LBU(inst); break;
-        case 0x5: exec_LHU(inst); break;
-        case 0x6: exec_LWU(inst); break;
+        case 0x0:   exec_BEQ(inst); break;  // RV32I Base
+        case 0x1:   exec_BNE(inst); break;  // RV32I Base
+        case 0x4:   exec_BLT(inst); break;  // RV32I Base
+        case 0x5:   exec_BGE(inst); break;  // RV32I Base
+        case 0x6:  exec_BLTU(inst); break;  // RV32I Base
+        case 0x7:  exec_BGEU(inst); break;  // RV32I Base
         default: {
-            debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}", opcode, funct3);
+            debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}", opcode, funct3);
             return Exception::IllegalInstruction;
         } break;
         } break;
 
-    case 0x0f:
+    case 0x03: // Load
         switch (funct3) {
-        case 0x0: exec_FENCE(inst); break;
+        case 0x0:   exec_LB(inst); break;  // RV32I Base
+        case 0x1:   exec_LH(inst); break;  // RV32I Base 
+        case 0x2:   exec_LW(inst); break;  // RV32I Base  
+        case 0x3:   exec_LD(inst); break;  // RV64I Base
+        case 0x4:  exec_LBU(inst); break;  // RV32I Base 
+        case 0x5:  exec_LHU(inst); break;  // RV32I Base 
+        case 0x6:  exec_LWU(inst); break;  // RV64I Base
         default: {
-            debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}", opcode, funct3);
+            debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}", opcode, funct3);
             return Exception::IllegalInstruction;
         } break;
         } break;
 
-    case 0x13:
+    case 0x23: // S-Type
         switch (funct3) {
-        case 0x0: exec_ADDI(inst); break;
-        case 0x1: exec_SLLI(inst); break;
-        case 0x2: exec_SLTI(inst); break;
-        case 0x3: exec_SLTIU(inst); break;
-        case 0x4: exec_XORI(inst); break;
-        case 0x5:
+        case 0x0:  exec_SB(inst); break;  // RV32I Base  
+        case 0x1:  exec_SH(inst); break;  // RV32I Base  
+        case 0x2:  exec_SW(inst); break;  // RV32I Base  
+        case 0x3:  exec_SD(inst); break;  // RV64I Base
+        default: {
+            debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}", opcode, funct3);
+            return Exception::IllegalInstruction;
+        } break;
+        } break;
+
+    case 0x13: // I-Type
+        switch (funct3) {
+        case 0x0:   exec_ADDI(inst); break;  // RV32I Base
+        case 0x1:   exec_SLLI(inst); break;  // RV64I Base
+        case 0x2:   exec_SLTI(inst); break;  // RV32I Base
+        case 0x3:  exec_SLTIU(inst); break;  // RV32I Base
+        case 0x4:   exec_XORI(inst); break;  // RV32I Base
+        case 0x5: // SRI
             switch (funct7 >> 1) {
-            case 0x00: exec_SRLI(inst); break;
-            case 0x10: exec_SRAI(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}, Funct7 {:#x}", opcode, funct3, funct7); break;
+            case 0x00:  exec_SRLI(inst); break;  // RV64I Base
+            case 0x10:  exec_SRAI(inst); break;  // RV64I Base
+            default: {
+                debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}, Funct7: {:#x}, Funct7 >> 1: {:#x}", opcode, funct3, funct7, funct7 >> 1);
+                return Exception::IllegalInstruction;
             } break;
-        case 0x6: exec_ORI(inst); break;
-        case 0x7: exec_ANDI(inst); break;
-        default: debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}", opcode, funct3); break;
+            } break;
+        case 0x6:   exec_ORI(inst); break;  // RV32I Base
+        case 0x7:  exec_ANDI(inst); break;  // RV32I Base
+        default: {
+            debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}", opcode, funct3);
+            return Exception::IllegalInstruction;
+        } break;
         } break;
 
-    case 0x17:  exec_AUIPC(inst); break;
-    case 0x1b:
+    case 0x33: // R-Type
         switch (funct3) {
-        case 0x0: exec_ADDIW(inst); break;
-        case 0x1: exec_SLLIW(inst); break;
+        case 0x00:
+            switch (funct7) {
+            case 0x00: exec_ADD(inst); break; // RV32I Base
+            case 0x01: exec_MUL(inst); break; // RV32I Base
+            case 0x20: exec_SUB(inst); break; // RV32I Base
+            default: {
+                debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}, Funct7: {:#x}", opcode, funct3, funct7);
+                return Exception::IllegalInstruction;
+            } break;
+            } break;
+        case 0x1:   exec_SLL(inst); break; // RV32I Base
+        case 0x2:   exec_SLT(inst); break; // RV32I Base
+        case 0x3:  exec_SLTU(inst); break; // RV32I Base
+        case 0x4:   exec_XOR(inst); break; // RV32I Base
         case 0x5:
             switch (funct7) {
-            case 0x00: exec_SRLIW(inst); break;
-            case 0x20: exec_SRAIW(inst); break;
+            case 0x00:  exec_SRL(inst); break; // RV32I Base
+            case 0x20:  exec_SRA(inst); break; // RV32I Base
             default: {
-                debug("Not implemented yet: Opcode {:#x}, Funct7 {:#x}", opcode, funct7);
+                debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}, Funct7: {:#x}", opcode, funct3, funct7);
+                return Exception::IllegalInstruction;
+            } break;
+            }
+        case 0x6:   exec_OR(inst); break; // RV32I Base
+        case 0x7:  exec_AND(inst); break; // RV32I Base
+        default: {
+            debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}", opcode, funct3);
+            return Exception::IllegalInstruction;
+        } break;
+        } break;
+
+    case 0x0f: exec_FENCE(inst); break;   // RV32I Base
+
+    case 0x1b: // I-Type 64
+        switch (funct3) {
+        case 0x0: exec_ADDIW(inst); break; // RV64I Base
+        case 0x1: exec_SLLIW(inst); break; // RV64I Base
+        case 0x5:
+            switch (funct7) {
+            case 0x00: exec_SRLIW(inst); break; // RV64I Base
+            case 0x20: exec_SRAIW(inst); break; // RV64I Base
+            default: {
+                debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}, Funct7: {:#x}", opcode, funct3, funct7);
                 return Exception::IllegalInstruction;
             } break;
             } break;
         default: {
-            debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}", opcode, funct3);
-            return Exception::IllegalInstruction;
-        } break;
-        } break;
-    case 0x23:
-        switch (funct3) {
-        case 0x0: exec_SB(inst); break;
-        case 0x1: exec_SH(inst); break;
-        case 0x2: exec_SW(inst); break;
-        case 0x3: exec_SD(inst); break;
-        default: {
-            debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}", opcode, funct3);
-        } break;
-        } break;
-    case 0x2f:
-        switch (funct5) {
-        case 0x00:
-            switch (funct3) {
-            case 0x2: exec_AMOADD_W(inst); break;
-            case 0x3: exec_AMOADD_D(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct5 {:#x}, Funct3 {:#x}", opcode, funct5, funct3); break;
-            } break;
-        case 0x01:
-            switch (funct3) {
-            case 0x2: exec_AMOSWAP_W(inst); break;
-            case 0x3: exec_AMOSWAP_D(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct5 {:#x}, Funct3 {:#x}", opcode, funct5, funct3); break;
-            } break;
-        default: {
-            debug("Not implemented yet: Opcode {:#x}, Funct5 {:#x}", opcode, funct5);
+            debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}", opcode, funct3);
             return Exception::IllegalInstruction;
         } break;
         } break;
 
-    case 0x33:
+    case 0x3b: // R-Type 64
         switch (funct3) {
         case 0x0:
             switch (funct7) {
-            case 0x00: exec_ADD(inst); break;
-            case 0x01: exec_MUL(inst); break;
-            case 0x20: exec_SUB(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}, Funct7 {:#x}", opcode, funct3, funct7); break;
+            case 0x00:  exec_ADDW(inst); break; // RV64I Base
+            case 0x20:  exec_SUBW(inst); break; // RV64I Base
+            case 0x01:  exec_MULW(inst); break; // RV64M Standard
+            default: {
+                debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}, Funct7: {:#x}", opcode, funct3, funct7);
+                return Exception::IllegalInstruction;
             } break;
-        case 0x1:
-            switch (funct7) {
-            case 0x00: exec_SLL(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}, Funct7 {:#x}", opcode, funct3, funct7); break;
             } break;
-        case 0x2:
-            switch (funct7) {
-            case 0x00: exec_SLT(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}, Funct7 {:#x}", opcode, funct3, funct7); break;
-            } break;
-        case 0x3:
-            switch (funct7) {
-            case 0x00: exec_SLTU(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}, Funct7 {:#x}", opcode, funct3, funct7); break;
-            } break;
-        case 0x4:
-            switch (funct7) {
-            case 0x00: exec_XOR(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}, Funct7 {:#x}", opcode, funct3, funct7); break;
-            } break;
+        case 0x4:  exec_DIVW(inst); break; // RV64M Standard
+        case 0x1:  exec_SLLW(inst); break; // RV64I Base
         case 0x5:
             switch (funct7) {
-            case 0x00: exec_SRL(inst); break;
-            case 0x20: exec_SRA(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}, Funct7 {:#x}", opcode, funct3, funct7); break;
+            case 0x00:   exec_SRLW(inst); break; // RV64I Base
+            case 0x20:   exec_SRAW(inst); break; // RV64I Base
+            case 0x01:  exec_DIVUW(inst); break; // RV64M Standard
+            default: {
+                debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}, Funct7: {:#x}", opcode, funct3, funct7);
+                return Exception::IllegalInstruction;
             } break;
-        case 0x6:
-            switch (funct7) {
-            case 0x00: exec_OR(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}, Funct7 {:#x}", opcode, funct3, funct7); break;
             } break;
-        case 0x7:
-            switch (funct7) {
-            case 0x00: exec_AND(inst); break;
-            default: debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}, Funct7 {:#x}", opcode, funct3, funct7); break;
-            } break;
+        case 0x6:  exec_REMW(inst); break; // RV64M Standard
+        case 0x7: exec_REMUW(inst); break; // RV64M Standard
         default: {
-            debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}", opcode, funct3);
+            debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}", opcode, funct3);
             return Exception::IllegalInstruction;
         } break;
         } break;
-
-    case 0x63:
-        switch (funct3) {
-        case 0x0: exec_BEQ(inst); break;
-        case 0x1: exec_BNE(inst); break;
-        case 0x4: exec_BLT(inst); break;
-        case 0x5: exec_BGE(inst); break;
-        case 0x6: exec_BLTU(inst); break;
-        case 0x7: exec_BGEU(inst); break;
-        default: {
-            debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}", opcode, funct3);
-            return Exception::IllegalInstruction;
-        } break;
-        } break;
-
-    case 0x67: exec_JALR(inst); break;
-    case 0x6f: exec_JAL(inst); break;
 
     case 0x73:
         switch (funct3) {
-        case 0x0:
-            switch (funct7) {
-            case 0x0:
-                switch (rs2(inst)) {
-                case 0x0: exec_ECALL(inst); break;
-                case 0x1: exec_EBREAK(inst); break;
+        case 0x0: {
+            switch (rs2(inst)) {
+            case 0x0: exec_ECALL(inst); break;   // RV32I Base
+            case 0x1: exec_EBREAK(inst); break;  // RV32I Base
+            case 0x2: switch (funct7) {    // RV64I Base
+                case 0x8: exec_SRET(inst); break;  // RV32I Base
+                case 0x18: exec_MRET(inst); break;  // RV32I Base
+                default: {
+                    debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}, rs2: {:#x}, funct7: {:#x}", opcode, funct3, rs2(inst), funct7);
+                    return Exception::IllegalInstruction;
                 } break;
-            case 0x8:
-                switch (rs2(inst)) {
-                case 0x2: exec_SRET(inst); break;
-                } break;
-            case 0x18:
-                switch (rs2(inst)) {
-                case 0x2: exec_MRET(inst); break;
-                } break;
-            case 0x9: exec_SFENCE_VMA(inst); break;
+            } break;
             default: {
-                debug("Not implemented yet: Opcode {:#x}, Funct3 {:#x}, Funct7 {:#x}", opcode, funct3, funct7); break;
+                debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}, rs2: {:#x}", opcode, funct3, rs2(inst));
                 return Exception::IllegalInstruction;
             } break;
-            } break;
-        case 0x1: exec_CSRRW(inst); break;
-        case 0x2: exec_CSRRS(inst); break;
-        case 0x3: exec_CSRRC(inst); break;
-        case 0x4: exec_CSRRWI(inst); break;
-        case 0x5: exec_CSRRSI(inst); break;
-        case 0x6: exec_CSRRCI(inst); break;
+            }
+        } break; // RV32I Base
+        case 0x1:  exec_CSRRW(inst); break; // RV64I Base
+        case 0x2:  exec_CSRRS(inst); break; // RV64I Base
+        case 0x3:  exec_CSRRC(inst); break; // RV64I Base
+        case 0x5:  exec_CSRRWI(inst); break; // RV64I Base
+        case 0x6:  exec_CSRRSI(inst); break; // RV64I Base
+        case 0x7:  exec_CSRRCI(inst); break; // RV64I Base
+        default: {
+            debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}", opcode, funct3);
+            return Exception::IllegalInstruction;
         } break;
+        } break;
+
+    case 0x2f:
+        switch (funct3) { // since, funct[1:0] = aq, rl
+        case 0x2: switch (funct5) {
+            case 0x00: exec_AMOADD_W(inst); break; // RV32A Standard
+            case 0x01: exec_AMOSWAP_W(inst); break; // RV32A Standard
+            default: {
+                debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}, Funct5: {:#x}", opcode, funct3, funct5);
+                return Exception::IllegalInstruction;
+            } break;
+        } break;
+        case 0x3: switch (funct5) {
+            case 0x00: exec_AMOADD_D(inst); break; // RV32A Standard
+            case 0x01: exec_AMOSWAP_D(inst); break; // RV32A Standard
+            default: {
+                debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}, Funct5: {:#x}", opcode, funct3, funct5);
+                return Exception::IllegalInstruction;
+            } break;
+        } break;
+        default: {
+            debug(Warning, "Instruction Not Supported: Opcode: {:#x}, Funct3: {:#x}", opcode, funct3);
+            return Exception::IllegalInstruction;
+        } break;
+        } break;
+
+    default: {
+        debug(Warning, "Instruction Not Supported: Opcode: {:#x}", opcode);
+        return Exception::IllegalInstruction;
+    } break;
     }
     return (uint64_t)0;
 }

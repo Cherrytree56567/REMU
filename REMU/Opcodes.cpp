@@ -3,7 +3,7 @@
 void CPU::exec_LUI(uint64_t inst) {
     // LUI places upper 20 bits of U-immediate value to rd
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(inst & 0xfffff000)));
-    debug("lui\n");
+    debug(Info, "lui\n");
 }
 
 void CPU::exec_AUIPC(uint64_t inst) {
@@ -11,7 +11,7 @@ void CPU::exec_AUIPC(uint64_t inst) {
     // of the U-immediate
     uint64_t imm = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(inst & 0xfffff000)));
     Registers[rd(inst)] = (ProgramCounter + imm) - 4;
-    debug("auipc\n");
+    debug(Info, "auipc\n");
 }
 
 uint32_t wrapping_add(uint32_t a, uint64_t b) {
@@ -25,9 +25,9 @@ uint32_t wrapping_add(uint32_t a, uint64_t b) {
 void CPU::exec_JAL(uint64_t inst) {
     Registers[rd(inst)] = ProgramCounter;
     uint64_t imm = imm_J(inst);
-    /*debug("JAL-> rd:%ld, pc:%lx\n", rd(inst), ProgramCounter);*/
+    /*debug(Info, "JAL-> rd:%ld, pc:%lx\n", rd(inst), ProgramCounter);*/
     ProgramCounter = (ProgramCounter + imm) - 4;
-    debug("jal\n");
+    debug(Info, "jal\n");
 }
 
 void CPU::exec_JALR(uint64_t inst) {
@@ -35,7 +35,7 @@ void CPU::exec_JALR(uint64_t inst) {
     uint64_t imm = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(inst & 0xfff00000)) >> 20);
     ProgramCounter = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = tmp;
-    debug("jalr\n");
+    debug(Info, "jalr\n");
 }
 
 void CPU::exec_BEQ(uint64_t inst) {
@@ -43,223 +43,223 @@ void CPU::exec_BEQ(uint64_t inst) {
     if (Registers[rs1(inst)] == Registers[rs2(inst)]) {
         ProgramCounter = (ProgramCounter + imm) - 4;
     }
-    debug("beq\n");
+    debug(Info, "beq\n");
 }
 void CPU::exec_BNE(uint64_t inst) {
     uint64_t imm = imm_B(inst);
     if (Registers[rs1(inst)] != Registers[rs2(inst)]) {
         ProgramCounter = (ProgramCounter + imm) - 4;
     }
-    debug("bne\n");
+    debug(Info, "bne\n");
 }
 void CPU::exec_BLT(uint64_t inst) {
-    /*debug("Operation: BLT\n");*/
+    /*debug(Info, "Operation: BLT\n");*/
     uint64_t imm = imm_B(inst);
     if (static_cast<int64_t>(Registers[rs1(inst)]) < static_cast<int64_t>(Registers[rs2(inst)])) {
         ProgramCounter = (ProgramCounter + imm) - 4;
     }
-    debug("blt\n");
+    debug(Info, "blt\n");
 }
 void CPU::exec_BGE(uint64_t inst) {
     uint64_t imm = imm_B(inst);
     if (static_cast<int64_t>(Registers[rs1(inst)]) >= static_cast<int64_t>(Registers[rs2(inst)])) {
         ProgramCounter = (ProgramCounter + imm) - 4;
     }
-    debug("bge\n");
+    debug(Info, "bge\n");
 }
 void CPU::exec_BLTU(uint64_t inst) {
     uint64_t imm = imm_B(inst);
     if (Registers[rs1(inst)] < Registers[rs2(inst)]) {
         ProgramCounter = (ProgramCounter + imm) - 4;
     }
-    debug("bltu\n");
+    debug(Info, "bltu\n");
 }
 void CPU::exec_BGEU(uint64_t inst) {
     uint64_t imm = imm_B(inst);
     if (Registers[rs1(inst)] >= Registers[rs2(inst)]) {
         ProgramCounter = (ProgramCounter + imm) - 4;
     }
-    debug("bgeu\n");
+    debug(Info, "bgeu\n");
 }
 void CPU::exec_LB(uint64_t inst) {
     // load 1 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(HandleException(MemoryLoad(addr, 8)))));
-    debug("lb\n");
+    debug(Info, "lb\n");
 }
 void CPU::exec_LH(uint64_t inst) {
     // load 2 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(HandleException(MemoryLoad(addr, 16)))));
-    debug("lh\n");
+    debug(Info, "lh\n");
 }
 void CPU::exec_LW(uint64_t inst) {
     // load 4 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(HandleException(MemoryLoad(addr, 32)))));
-    debug("lw\n");
+    debug(Info, "lw\n");
 }
 void CPU::exec_LD(uint64_t inst) {
     // load 8 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = HandleException(MemoryLoad(addr, 64));
-    debug("ld\n");
+    debug(Info, "ld\n");
 }
 void CPU::exec_LBU(uint64_t inst) {
     // load unsigned 1 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = HandleException(MemoryLoad(addr, 8));
-    debug("lbu\n");
+    debug(Info, "lbu\n");
 }
 void CPU::exec_LHU(uint64_t inst) {
     // load unsigned 2 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = HandleException(MemoryLoad(addr, 16));
-    debug("lhu\n");
+    debug(Info, "lhu\n");
 }
 void CPU::exec_LWU(uint64_t inst) {
     // load unsigned 2 byte to rd from address in rs1
     uint64_t imm = imm_I(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     Registers[rd(inst)] = HandleException(MemoryLoad(addr, 32));
-    debug("lwu\n");
+    debug(Info, "lwu\n");
 }
 void CPU::exec_SB(uint64_t inst) {
     uint64_t imm = imm_S(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     MemoryStore(addr, 8, Registers[rs2(inst)]);
-    debug("sb\n");
+    debug(Info, "sb\n");
 }
 void CPU::exec_SH(uint64_t inst) {
     uint64_t imm = imm_S(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     MemoryStore(addr, 16, Registers[rs2(inst)]);
-    debug("sh\n");
+    debug(Info, "sh\n");
 }
 void CPU::exec_SW(uint64_t inst) {
     uint64_t imm = imm_S(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     MemoryStore(addr, 32, Registers[rs2(inst)]);
-    debug("sw\n");
+    debug(Info, "sw\n");
 }
 void CPU::exec_SD(uint64_t inst) {
     uint64_t imm = imm_S(inst);
     uint64_t addr = Registers[rs1(inst)] + imm;
     MemoryStore(addr, 64, Registers[rs2(inst)]);
-    debug("sd\n");
+    debug(Info, "sd\n");
 }
 
 void CPU::exec_ADDI(uint64_t inst) {
     uint64_t imm = imm_I(inst);
     Registers[rd(inst)] = Registers[rs1(inst)] + imm;
-    debug("addi\n");
+    debug(Info, "addi\n");
 }
 
 void CPU::exec_SLLI(uint64_t inst) {
     Registers[rd(inst)] = Registers[rs1(inst)] << shamt(inst);
-    debug("slli\n");
+    debug(Info, "slli\n");
 }
 
 void CPU::exec_SLTI(uint64_t inst) {
     uint64_t imm = imm_I(inst);
     Registers[rd(inst)] = (static_cast<int64_t>(Registers[rs1(inst)]) < static_cast<int64_t>(imm)) ? 1 : 0;
-    debug("slti\n");
+    debug(Info, "slti\n");
 }
 
 void CPU::exec_SLTIU(uint64_t inst) {
     uint64_t imm = imm_I(inst);
     Registers[rd(inst)] = (Registers[rs1(inst)] < imm) ? 1 : 0;
-    debug("sltiu\n");
+    debug(Info, "sltiu\n");
 }
 
 void CPU::exec_XORI(uint64_t inst) {
     uint64_t imm = imm_I(inst);
     Registers[rd(inst)] = Registers[rs1(inst)] ^ imm;
-    debug("xori\n");
+    debug(Info, "xori\n");
 }
 
 void CPU::exec_SRLI(uint64_t inst) {
     uint64_t imm = imm_I(inst);
     Registers[rd(inst)] = wrapping_shr(Registers[rs1(inst)], imm);
-    debug("srli\n");
+    debug(Info, "srli\n");
 }
 
 void CPU::exec_SRAI(uint64_t inst) {
     uint64_t imm = imm_I(inst);
     Registers[rd(inst)] = static_cast<uint64_t>(wrapping_shr(static_cast<int64_t>(Registers[rs1(inst)]), imm));
-    debug("srai\n");
+    debug(Info, "srai\n");
 }
 
 void CPU::exec_ORI(uint64_t inst) {
     uint64_t imm = imm_I(inst);
     Registers[rd(inst)] = Registers[rs1(inst)] | imm;
-    debug("ori\n");
+    debug(Info, "ori\n");
 }
 
 void CPU::exec_ANDI(uint64_t inst) {
     uint64_t imm = imm_I(inst);
     Registers[rd(inst)] = Registers[rs1(inst)] & imm;
-    debug("andi\n");
+    debug(Info, "andi\n");
 }
 
 void CPU::exec_ADD(uint64_t inst) {
     Registers[rd(inst)] = Registers[rs1(inst)] + Registers[rs2(inst)];
-    debug("add\n");
+    debug(Info, "add\n");
 }
 
 void CPU::exec_SUB(uint64_t inst) {
     Registers[rd(inst)] = Registers[rs1(inst)] - Registers[rs2(inst)];
-    debug("sub\n");
+    debug(Info, "sub\n");
 }
 
 void CPU::exec_SLL(uint64_t inst) {
     Registers[rd(inst)] = wrapping_shl(Registers[rs1(inst)], static_cast<uint32_t>(static_cast<uint64_t>(Registers[rs2(inst)] & 0x3f)));
-    debug("sll\n");
+    debug(Info, "sll\n");
 }
 
 void CPU::exec_SLT(uint64_t inst) {
     Registers[rd(inst)] = (static_cast<int64_t>(Registers[rs1(inst)]) < static_cast<int32_t>(Registers[rs2(inst)])) ? 1 : 0;
-    debug("slt\n");
+    debug(Info, "slt\n");
 }
 
 void CPU::exec_SLTU(uint64_t inst) {
     Registers[rd(inst)] = (Registers[rs1(inst)] < Registers[rs2(inst)]) ? 1 : 0;
-    debug("slti\n");
+    debug(Info, "slti\n");
 }
 
 void CPU::exec_XOR(uint64_t inst) {
     Registers[rd(inst)] = Registers[rs1(inst)] ^ Registers[rs2(inst)];
-    debug("xor\n");
+    debug(Info, "xor\n");
 }
 
 void CPU::exec_SRL(uint64_t inst) {
     Registers[rd(inst)] = wrapping_shr(Registers[rs1(inst)], static_cast<uint32_t>(static_cast<uint64_t>(Registers[rs2(inst)] & 0x3f)));
-    debug("srl\n");
+    debug(Info, "srl\n");
 }
 
 void CPU::exec_SRA(uint64_t inst) {
     Registers[rd(inst)] = static_cast<uint64_t>(wrapping_shr(static_cast<int64_t>(Registers[rs1(inst)]), static_cast<uint32_t>(static_cast<uint64_t>(Registers[rs2(inst)] & 0x3f))));
-    debug("sra\n");
+    debug(Info, "sra\n");
 }
 
 void CPU::exec_OR(uint64_t inst) {
     Registers[rd(inst)] = Registers[rs1(inst)] | Registers[rs2(inst)];
-    debug("or\n");
+    debug(Info, "or\n");
 }
 
 void CPU::exec_AND(uint64_t inst) {
     Registers[rd(inst)] = Registers[rs1(inst)] & Registers[rs2(inst)];
-    debug("and\n");
+    debug(Info, "and\n");
 }
 
 void CPU::exec_FENCE(uint64_t inst) {
-    debug("fence\n");
+    debug(Info, "fence\n");
 }
 
 std::variant<uint64_t, Exception> CPU::exec_ECALL(uint64_t inst) {
@@ -285,59 +285,59 @@ std::variant<uint64_t, Exception> CPU::exec_EBREAK(uint64_t inst) {
 void CPU::exec_ADDIW(uint64_t inst) {
     uint64_t imm = imm_I(inst);
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(Registers[rs1(inst)] + imm)));
-    debug("addiw\n");
+    debug(Info, "addiw\n");
 }
 
 void CPU::exec_SLLIW(uint64_t inst) {
     Registers[rd(inst)] = wrapping_shl(Registers[rs1(inst)], static_cast<uint32_t>(imm_I(inst) & 0x1f));
-    debug("slliw\n");
+    debug(Info, "slliw\n");
 }
 void CPU::exec_SRLIW(uint64_t inst) {
     Registers[rd(inst)] = static_cast<int32_t>(wrapping_shr(static_cast<uint64_t>(Registers[rs1(inst)]), static_cast<uint32_t>(imm_I(inst) & 0x1f)));
-    debug("srliw\n");
+    debug(Info, "srliw\n");
 }
 void CPU::exec_SRAIW(uint64_t inst) {
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(wrapping_shr(static_cast<int32_t>(Registers[rs1(inst)]), static_cast<uint32_t>(imm_I(inst) & 0x1f))));
-    debug("sraiw\n");
+    debug(Info, "sraiw\n");
 }
 void CPU::exec_ADDW(uint64_t inst) {
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int64_t>(static_cast<int32_t>(Registers[rs1(inst)] + Registers[rs2(inst)])));
-    debug("addw\n");
+    debug(Info, "addw\n");
 }
 void CPU::exec_MULW(uint64_t inst) {
     Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)]
         * (int64_t)Registers[rs2(inst)]);
-    debug("mulw\n");
+    debug(Info, "mulw\n");
 }
 void CPU::exec_SUBW(uint64_t inst) {
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int32_t>(Registers[rs1(inst)] - Registers[rs2(inst)]));
-    debug("subw\n");
+    debug(Info, "subw\n");
 }
 void CPU::exec_DIVW(uint64_t inst) {
     Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)]
         / (int64_t)Registers[rs2(inst)]);
-    debug("divw\n");
+    debug(Info, "divw\n");
 }
 void CPU::exec_SLLW(uint64_t inst) {
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int32_t>(wrapping_shl(static_cast<uint32_t>(Registers[rs1(inst)]), static_cast<uint32_t>(Registers[rs2(inst)] & 0x1f))));
-    debug("sllw\n");
+    debug(Info, "sllw\n");
 }
 void CPU::exec_SRLW(uint64_t inst) {
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int32_t>(wrapping_shr(static_cast<uint32_t>(Registers[rs1(inst)]), static_cast<uint32_t>(static_cast<uint64_t>(Registers[rs2(inst)] & 0x3f)))));
-    debug("srlw\n");
+    debug(Info, "srlw\n");
 }
 void CPU::exec_DIVUW(uint64_t inst) {
     Registers[rd(inst)] = Registers[rs1(inst)] / (int64_t)Registers[rs2(inst)];
-    debug("divuw\n");
+    debug(Info, "divuw\n");
 }
 void CPU::exec_SRAW(uint64_t inst) {
     Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int32_t>(Registers[rs1(inst)]) >> static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint64_t>(Registers[rs2(inst)] & 0x3f))));
-    debug("sraw\n");
+    debug(Info, "sraw\n");
 }
 void CPU::exec_REMW(uint64_t inst) {
     Registers[rd(inst)] = (int64_t)(int32_t)(Registers[rs1(inst)]
         % (int64_t)Registers[rs2(inst)]);
-    debug("remw\n");
+    debug(Info, "remw\n");
 }
 void CPU::exec_REMUW(uint64_t inst) {
     switch (Registers[rs2(inst)]) {
@@ -350,133 +350,133 @@ void CPU::exec_REMUW(uint64_t inst) {
         uint32_t divisor = static_cast<uint32_t>(Registers[rs2(inst)]);
         Registers[rd(inst)] = static_cast<uint64_t>(static_cast<int32_t>(dividend % divisor));
     }
-    debug("remuw\n");
+    debug(Info, "remuw\n");
 }
 
 void CPU::exec_LR_W(uint64_t inst) {
     Registers[rd(inst)] = HandleException(MemoryLoad(Registers[rs1(inst)], 32));
-    debug("amolr.w\n");
+    debug(Info, "amolr.w\n");
 }
 void CPU::exec_SC_W(uint64_t inst) {
     MemoryStore(Registers[rs1(inst)], 32, Registers[rs2(inst)]);
     Registers[rd(inst)] = 0;
-    debug("amosc.w\n");
+    debug(Info, "amosc.w\n");
 }
 void CPU::exec_AMOSWAP_W(uint64_t inst) {
     MemoryStore(rs1(inst), 32, rs2(inst));
     Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 32));
-    debug("amoswap.w\n");
+    debug(Info, "amoswap.w\n");
 }
 void CPU::exec_AMOADD_W(uint64_t inst) {
     uint64_t tmp = HandleException(MemoryLoad(Registers[rs1(inst)], 32));
     uint64_t res = tmp + Registers[rs2(inst)];
     MemoryStore(Registers[rs1(inst)], 32, res);
     Registers[rd(inst)] = tmp;
-    debug("amoadd.w\n");
+    debug(Info, "amoadd.w\n");
 }
 void CPU::exec_AMOXOR_W(uint64_t inst) {
     uint64_t tmp = HandleException(MemoryLoad(Registers[rs1(inst)], 32));
     uint64_t res = tmp ^ (uint32_t)Registers[rs2(inst)];
     Registers[rd(inst)] = tmp;
     MemoryStore(Registers[rs1(inst)], 32, res);
-    debug("amoxor.w\n");
+    debug(Info, "amoxor.w\n");
 }
 void CPU::exec_AMOAND_W(uint64_t inst) {
     uint64_t tmp = HandleException(MemoryLoad(Registers[rs1(inst)], 32));
     uint64_t res = tmp & (uint32_t)Registers[rs2(inst)];
     Registers[rd(inst)] = tmp;
     MemoryStore(Registers[rs1(inst)], 32, res);
-    debug("amoand.w\n");
+    debug(Info, "amoand.w\n");
 }
 void CPU::exec_AMOOR_W(uint64_t inst) {
     uint64_t tmp = HandleException(MemoryLoad(Registers[rs1(inst)], 32));
     uint64_t res = tmp | (uint32_t)Registers[rs2(inst)];
     Registers[rd(inst)] = tmp;
     MemoryStore(Registers[rs1(inst)], 32, res);
-    debug("amoor.w\n");
+    debug(Info, "amoor.w\n");
 }
 void CPU::exec_AMOMIN_W(uint64_t inst) {
     Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 32));
     MemoryStore(rs1(inst), 32, std::min(Registers[rd(inst)], rs2(inst)));
-    debug("amomin.w\n");
+    debug(Info, "amomin.w\n");
 }
 void CPU::exec_AMOMAX_W(uint64_t inst) {
     Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 32));
     MemoryStore(rs1(inst), 32, std::max(Registers[rd(inst)], rs2(inst)));
-    debug("amomax.w\n");
+    debug(Info, "amomax.w\n");
 }
 void CPU::exec_AMOMINU_W(uint64_t inst) {
     Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 32));
     MemoryStore(rs1(inst), 32, std::min(Registers[rd(inst)], rs2(inst)));
-    debug("amominu.w\n");
+    debug(Info, "amominu.w\n");
 }
 void CPU::exec_AMOMAXU_W(uint64_t inst) {
     Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 32));
     MemoryStore(rs1(inst), 32, std::max(Registers[rd(inst)], rs2(inst)));
-    debug("amomaxu.w\n");
+    debug(Info, "amomaxu.w\n");
 }
 
 void CPU::exec_LR_D(uint64_t inst) {
     Registers[rd(inst)] = HandleException(MemoryLoad(Registers[rs1(inst)], 64));
-    debug("amolr.d\n");
+    debug(Info, "amolr.d\n");
 }
 void CPU::exec_SC_D(uint64_t inst) {
     MemoryStore(Registers[rs1(inst)], 64, Registers[rs2(inst)]);
     Registers[rd(inst)] = 0;
-    debug("amosc.d\n");
+    debug(Info, "amosc.d\n");
 }
 void CPU::exec_AMOSWAP_D(uint64_t inst) {
     MemoryStore(rs1(inst), 64, rs2(inst));
     Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 64));
-    debug("amoswap.d\n");
+    debug(Info, "amoswap.d\n");
 }
 void CPU::exec_AMOADD_D(uint64_t inst) {
     uint64_t tmp = HandleException(MemoryLoad(Registers[rs1(inst)], 64));
     uint64_t res = tmp + Registers[rs2(inst)];
     MemoryStore(Registers[rs1(inst)], 64, res);
     Registers[rd(inst)] = tmp;
-    debug("amoadd.d\n");
+    debug(Info, "amoadd.d\n");
 }
 void CPU::exec_AMOXOR_D(uint64_t inst) {
     uint64_t tmp = HandleException(MemoryLoad(Registers[rs1(inst)], 64));
     uint64_t res = tmp ^ (uint64_t)Registers[rs2(inst)];
     Registers[rd(inst)] = tmp;
     MemoryStore(Registers[rs1(inst)], 64, res);
-    debug("amoxor.d\n");
+    debug(Info, "amoxor.d\n");
 }
 void CPU::exec_AMOAND_D(uint64_t inst) {
     uint64_t tmp = HandleException(MemoryLoad(Registers[rs1(inst)], 64));
     uint64_t res = tmp & (uint64_t)Registers[rs2(inst)];
     Registers[rd(inst)] = tmp;
     MemoryStore(Registers[rs1(inst)], 64, res);
-    debug("amoand.d\n");
+    debug(Info, "amoand.d\n");
 }
 void CPU::exec_AMOOR_D(uint64_t inst) {
     uint64_t tmp = HandleException(MemoryLoad(Registers[rs1(inst)], 64));
     uint64_t res = tmp | (uint64_t)Registers[rs2(inst)];
     Registers[rd(inst)] = tmp;
     MemoryStore(Registers[rs1(inst)], 64, res);
-    debug("amoor.d\n");
+    debug(Info, "amoor.d\n");
 }
 void CPU::exec_AMOMIN_D(uint64_t inst) {
     Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 64));
     MemoryStore(rs1(inst), 64, std::min(Registers[rd(inst)], rs2(inst)));
-    debug("amomin.d\n");
+    debug(Info, "amomin.d\n");
 }
 void CPU::exec_AMOMAX_D(uint64_t inst) {
     Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 64));
     MemoryStore(rs1(inst), 64, std::max(Registers[rd(inst)], rs2(inst)));
-    debug("amomax.d\n");
+    debug(Info, "amomax.d\n");
 }
 void CPU::exec_AMOMINU_D(uint64_t inst) {
     Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 64));
     MemoryStore(rs1(inst), 64, std::min(Registers[rd(inst)], rs2(inst)));
-    debug("amominu.d\n");
+    debug(Info, "amominu.d\n");
 }
 void CPU::exec_AMOMAXU_D(uint64_t inst) {
     Registers[rd(inst)] = HandleException(MemoryLoad(rs1(inst), 64));
     MemoryStore(rs1(inst), 64, std::max(Registers[rd(inst)], rs2(inst)));
-    debug("amomaxu.d\n");
+    debug(Info, "amomaxu.d\n");
 }
 
 void CPU::exec_CSRRW(uint64_t inst) {
@@ -485,7 +485,7 @@ void CPU::exec_CSRRW(uint64_t inst) {
     Registers[rd(inst)] = t;
 
     update_paging(csr(inst));
-    debug("csrrw\n");
+    debug(Info, "csrrw\n");
 }
 void CPU::exec_CSRRS(uint64_t inst) {
     uint64_t t = csrRead(csr(inst));
@@ -493,7 +493,7 @@ void CPU::exec_CSRRS(uint64_t inst) {
     Registers[rd(inst)] = t;
 
     update_paging(csr(inst));
-    debug("csrrs\n");
+    debug(Info, "csrrs\n");
 }
 void CPU::exec_CSRRC(uint64_t inst) {
     uint64_t t = csrRead(csr(inst));
@@ -501,7 +501,7 @@ void CPU::exec_CSRRC(uint64_t inst) {
     Registers[rd(inst)] = t;
 
     update_paging(csr(inst));
-    debug("csrrc\n");
+    debug(Info, "csrrc\n");
 }
 void CPU::exec_CSRRWI(uint64_t inst) {
     uint64_t zimm = rs1(inst);
@@ -509,7 +509,7 @@ void CPU::exec_CSRRWI(uint64_t inst) {
     csrWrite(csr(inst), zimm);
 
     update_paging(csr(inst));
-    debug("csrrwi\n");
+    debug(Info, "csrrwi\n");
 }
 void CPU::exec_CSRRSI(uint64_t inst) {
     uint64_t zimm = rs1(inst);
@@ -518,7 +518,7 @@ void CPU::exec_CSRRSI(uint64_t inst) {
     Registers[rd(inst)] = t;
 
     update_paging(csr(inst));
-    debug("csrrsi\n");
+    debug(Info, "csrrsi\n");
 }
 void CPU::exec_CSRRCI(uint64_t inst) {
     uint64_t zimm = rs1(inst);
@@ -527,11 +527,11 @@ void CPU::exec_CSRRCI(uint64_t inst) {
     Registers[rd(inst)] = t;
 
     update_paging(csr(inst));
-    debug("csrrci\n");
+    debug(Info, "csrrci\n");
 }
 void CPU::exec_SFENCE_VMA(uint64_t inst) {
     // Do Nothing
-    debug("sfence.vma\n");
+    debug(Info, "sfence.vma\n");
 }
 void CPU::exec_SRET(uint64_t inst) {
     switch ((csrRead(SSTATUS) >> 8) & 1) {
@@ -548,7 +548,7 @@ void CPU::exec_SRET(uint64_t inst) {
 
     csrWrite(SSTATUS, csrRead(SSTATUS) | (1 << 5));
     csrWrite(SSTATUS, csrRead(SSTATUS) & !(1 << 8));
-    debug("sret\n");
+    debug(Info, "sret\n");
 }
 void CPU::exec_MRET(uint64_t inst) {
     ProgramCounter = csrRead(MEPC);
@@ -569,27 +569,27 @@ void CPU::exec_MRET(uint64_t inst) {
     csrWrite(MSTATUS, (csrRead(MSTATUS) | (1 << 7)));
 
     csrWrite(MSTATUS, (csrRead(MSTATUS) & !(0b11 << 11)));
-    debug("mret\n");
+    debug(Info, "mret\n");
 }
 void CPU::exec_MUL(uint64_t inst) {
     Registers[rd(inst)] = Registers[rs1(inst)] * Registers[rs2(inst)];
-    debug("mul\n");
+    debug(Info, "mul\n");
 }
 void CPU::exec_MULH(uint64_t inst) {
     // TODO
-    debug("mulh\n");
+    debug(Info, "mulh\n");
 }
 void CPU::exec_MULHSU(uint64_t inst) {
     // TODO
-    debug("mulhsu\n");
+    debug(Info, "mulhsu\n");
 }
 void CPU::exec_MULHU(uint64_t inst) {
     // TODO
-    debug("mulhu\n");
+    debug(Info, "mulhu\n");
 }
 void CPU::exec_DIV(uint64_t inst) {
     // TODO
-    debug("div\n");
+    debug(Info, "div\n");
 }
 void CPU::exec_DIVU(uint64_t inst) {
     switch (Registers[rs2(inst)]) {
@@ -603,13 +603,13 @@ void CPU::exec_DIVU(uint64_t inst) {
         Registers[rd(inst)] = dividend / divisor;
     } break;
     };
-    debug("divu\n");
+    debug(Info, "divu\n");
 }
 void CPU::exec_REM(uint64_t inst) {
     // TODO
-    debug("rem\n");
+    debug(Info, "rem\n");
 }
 void CPU::exec_REMU(uint64_t inst) {
     // TODO
-    debug("remu\n");
+    debug(Info, "remu\n");
 }
